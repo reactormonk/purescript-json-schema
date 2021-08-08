@@ -1,0 +1,1298 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Profession.schema.json",
+  "title": "Profession",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "instances": {
+      "description": "A list of professions representing the same profession but with (slightly) different stats. For example, there may be a profession in a regional sourcebook or in the core rules and a profession in an extension rulebook like Magic of Aventuria, where the profession is basically called the same and almost has the same values, but the version from Magic of Aventuria features a spell style special ability that does not exist in the core rules or regional sourcebook.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SubProfession"
+      },
+      "minItems": 1
+    }
+  },
+  "required": ["id", "instances"],
+  "additionalProperties": false,
+  "definitions": {
+    "SubProfession": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "An unique, increasing integer.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "apValue": {
+          "description": "The AP value you have to pay for the package.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "prerequisites": {
+          "$ref": "_PrerequisiteGroups.schema.json#/definitions/ProfessionCollection"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "skillSpecialization": {
+              "$ref": "#/definitions/SkillSpecializationSelectOptions"
+            },
+            "languageScripts": {
+              "$ref": "#/definitions/LanguageScriptSelectOptions"
+            },
+            "combatTechniques": {
+              "$ref": "#/definitions/CombatTechniqueSelectOptions"
+            },
+            "cantrips": {
+              "$ref": "#/definitions/CantripSelectOptions"
+            },
+            "curses": {
+              "$ref": "#/definitions/CurseSelectOptions"
+            },
+            "terrainKnowledge": {
+              "$ref": "#/definitions/TerrainKnowledgeSelectOptions"
+            },
+            "skills": {
+              "$ref": "#/definitions/SkillSelectOptions"
+            }
+          },
+          "minProperties": 1,
+          "additionalProperties": false
+        },
+        "specialAbilities": {
+          "description": "The list of special abilties contained in the profession package.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/SpecialAbility" },
+              { "$ref": "#/definitions/SpecialAbilitySelection" }
+            ]
+          },
+          "minItems": 1
+        },
+        "combatTechniques": {
+          "description": "The combat technique values of the profession package. If you buy the profession package, the `value` will be *added* to the current CtR, which starts at 6.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "MeleeCombatTechnique",
+                      "RangedCombatTechnique"
+                    ]
+                  },
+                  "value": { "type": "integer", "minimum": 1 }
+                },
+                "required": ["type", "value"],
+                "additionalProperties": false
+              },
+              "value": {
+                "description": "`value` will be *added* to the current CtR, which starts at 6. Example: `id: CT_1, value: 4` would result in CtR 10 for `CT_1`.",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 6
+              }
+            },
+            "required": ["id", "value"],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "skills": {
+          "description": "The skill values of the profession package. If you buy the profession package, the value will be *added* to the current SR.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer", "minimum": 1 },
+              "value": {
+                "description": "`value` will be added to the current SR.",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 8
+              }
+            },
+            "required": ["id", "value"],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "spells": {
+          "description": "The spell values of the profession package. If you buy the profession package, the value will be *added* to the current SR and the spell will get activated.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "Spell",
+                          "Ritual",
+                          "Curse",
+                          "ElvenMagicalSong",
+                          "DominationRitual",
+                          "MagicalMelody",
+                          "MagicalDance",
+                          "JesterTrick",
+                          "AnimistPower",
+                          "GeodeRitual",
+                          "ZibiljaRitual"
+                        ]
+                      },
+                      "value": { "type": "integer", "minimum": 1 }
+                    },
+                    "required": ["type", "value"],
+                    "additionalProperties": false
+                  },
+                  "value": {
+                    "description": "`value` will be added to the current SR.",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10
+                  }
+                },
+                "required": ["id", "value"],
+                "additionalProperties": false
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "enum": [
+                            "Spell",
+                            "Ritual",
+                            "Curse",
+                            "ElvenMagicalSong",
+                            "DominationRitual",
+                            "MagicalMelody",
+                            "MagicalDance",
+                            "JesterTrick",
+                            "AnimistPower",
+                            "GeodeRitual",
+                            "ZibiljaRitual"
+                          ]
+                        },
+                        "value": { "type": "integer", "minimum": 1 }
+                      },
+                      "required": ["type", "value"],
+                      "additionalProperties": false
+                    },
+                    "value": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 10
+                    }
+                  },
+                  "required": ["id", "value"],
+                  "additionalProperties": false
+                },
+                "minItems": 2
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        "liturgicalChants": {
+          "description": "The chant values of the profession package. If you buy the profession package, the value will be *added* to the current SR and the chant will get activated.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "LiturgicalChant",
+                          "Ceremony"
+                        ]
+                      },
+                      "value": { "type": "integer", "minimum": 1 }
+                    },
+                    "required": ["type", "value"],
+                    "additionalProperties": false
+                  },
+                  "value": {
+                    "description": "`value` will be added to the current SR.",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10
+                  }
+                },
+                "required": ["id", "value"],
+                "additionalProperties": false
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "enum": [
+                            "LiturgicalChant",
+                            "Ceremony"
+                          ]
+                        },
+                        "value": { "type": "integer", "minimum": 1 }
+                      },
+                      "required": ["type", "value"],
+                      "additionalProperties": false
+                    },
+                    "value": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 10
+                    }
+                  },
+                  "required": ["id", "value"],
+                  "additionalProperties": false
+                },
+                "minItems": 2
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        "blessings": {
+          "description": "The list of blessings to activate for the profession package.",
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "suggestedAdvantages": {
+          "description": "A list of suggested advantages.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "suggestedDisadvantages": {
+          "description": "A list of suggested disadvantages.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "unsuitableAdvantages": {
+          "description": "A list of unsuitable advantages.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "unsuitableDisadvantages": {
+          "description": "A list of unsuitable disadvantages.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "variants": {
+          "description": "A list of available profession variants.",
+          "type": "array",
+          "items": {
+            "title": "Profession Variant",
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "An unique, increasing integer.",
+                "type": "integer",
+                "minimum": 1
+              },
+              "apValue": {
+                "description": "The difference AP value you have to pay for the package variant. So if the profession costs 260 AP and the variant costs 266 AP, 6 has to be inserted here.",
+                "type": "integer"
+              },
+              "prerequisites": {
+                "$ref": "_PrerequisiteGroups.schema.json#/definitions/ProfessionCollection"
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "skillSpecialization": {
+                    "description": "Either valid options or an object set to \"false\" to remove the options from the base profession.",
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Remove"
+                          }
+                        },
+                        "required": ["type"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Override"
+                          },
+                          "value": {
+                            "$ref": "#/definitions/SkillSpecializationSelectOptions"
+                          }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "languageScripts": {
+                    "description": "Either valid options or an object set to \"false\" to remove the options from the base profession.",
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Remove"
+                          }
+                        },
+                        "required": ["type"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Override"
+                          },
+                          "value": {
+                            "$ref": "#/definitions/LanguageScriptSelectOptions"
+                          }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "combatTechniques": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Remove"
+                          }
+                        },
+                        "required": ["type"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Override"
+                          },
+                          "value": {
+                            "$ref": "#/definitions/CombatTechniqueSelectOptions"
+                          }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "cantrips": {
+                    "description": "Either valid options or an object set to \"false\" to remove the options from the base profession.",
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Remove"
+                          }
+                        },
+                        "required": ["type"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Override"
+                          },
+                          "value": {
+                            "$ref": "#/definitions/CantripSelectOptions"
+                          }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "curses": {
+                    "description": "Either valid options or an object set to \"false\" to remove the options from the base profession.",
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Remove"
+                          }
+                        },
+                        "required": ["type"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Override"
+                          },
+                          "value": {
+                            "$ref": "#/definitions/CurseSelectOptions"
+                          }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "terrainKnowledge": {
+                    "description": "Either valid options or an object set to \"false\" to remove the options from the base profession.",
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Remove"
+                          }
+                        },
+                        "required": ["type"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Override"
+                          },
+                          "value": {
+                            "$ref": "#/definitions/TerrainKnowledgeSelectOptions"
+                          }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "skills": {
+                    "description": "Either valid options or an object set to \"false\" to remove the options from the base profession.",
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Remove"
+                          }
+                        },
+                        "required": ["type"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "Override"
+                          },
+                          "value": {
+                            "$ref": "#/definitions/SkillSelectOptions"
+                          }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "minProperties": 1,
+                "additionalProperties": false
+              },
+              "specialAbilities": {
+                "description": "The list of special abilties contained in the profession variant. The contents of this field are merged with the field of the same name in the profession. If an entry is set to \"active: false\" while its \"active: true\" in the profession (\"active: true\" is default if \"active\" is not defined), it will be removed.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/VariantSpecialAbility"
+                },
+                "minItems": 1
+              },
+              "combatTechniques": {
+                "description": "The combat technique values difference of the profession variant. This field reflects the changes (difference) to the field of the same name in the profession package.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "enum": [
+                            "MeleeCombatTechnique",
+                            "RangedCombatTechnique"
+                          ]
+                        },
+                        "value": { "type": "integer", "minimum": 1 }
+                      },
+                      "required": ["type", "value"],
+                      "additionalProperties": false
+                    },
+                    "value": {
+                      "description": "`value` will be *added* to the current CtR, which starts at 6. Example: `id: CT_1, value: 4` would result in CtR 10 for `CT_1`.",
+                      "type": "integer",
+                      "minimum": -6,
+                      "maximum": 6
+                    }
+                  },
+                  "required": ["id", "value"],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              },
+              "skills": {
+                "description": "The skill values difference of the profession variant. This field reflects the changes (difference) to the field of the same name in the profession package.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer", "minimum": 1 },
+                    "value": {
+                      "description": "`value` will be added to the current SR.",
+                      "type": "integer",
+                      "minimum": -8,
+                      "maximum": 8
+                    }
+                  },
+                  "required": ["id", "value"],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              },
+              "spells": {
+                "description": "The spell values difference of the profession variant. This field reflects the changes (difference) to the field of the same name in the profession package. If a spell gets to SR 0 because of this, it will be removed completely.",
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "enum": [
+                                "Spell",
+                                "Ritual",
+                                "Curse",
+                                "ElvenMagicalSong",
+                                "DominationRitual",
+                                "MagicalMelody",
+                                "MagicalDance",
+                                "JesterTrick",
+                                "AnimistPower",
+                                "GeodeRitual",
+                                "ZibiljaRitual"
+                              ]
+                            },
+                            "value": { "type": "integer", "minimum": 1 }
+                          },
+                          "required": ["type", "value"],
+                          "additionalProperties": false
+                        },
+                        "value": {
+                          "description": "`value` will be added to the current SR.",
+                          "type": "integer",
+                          "minimum": -10,
+                          "maximum": 10
+                        }
+                      },
+                      "required": ["id", "value"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "enum": [
+                                  "Spell",
+                                  "Ritual",
+                                  "Curse",
+                                  "ElvenMagicalSong",
+                                  "DominationRitual",
+                                  "MagicalMelody",
+                                  "MagicalDance",
+                                  "JesterTrick",
+                                  "AnimistPower",
+                                  "GeodeRitual",
+                                  "ZibiljaRitual"
+                                ]
+                              },
+                              "value": { "type": "integer", "minimum": 1 }
+                            },
+                            "required": ["type", "value"],
+                            "additionalProperties": false
+                          },
+                          "value": {
+                            "type": "integer",
+                            "minimum": -10,
+                            "maximum": 10
+                          }
+                        },
+                        "required": ["id", "value"],
+                        "additionalProperties": false
+                      },
+                      "minItems": 2
+                    }
+                  ]
+                },
+                "minItems": 1
+              },
+              "liturgicalChants": {
+                "description": "The chant values difference of the profession variant. This field reflects the changes (difference) to the field of the same name in the profession package. If a chant gets to SR 0 because of this, it will be removed completely.",
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "enum": [
+                                "LiturgicalChant",
+                                "Ceremony"
+                              ]
+                            },
+                            "value": { "type": "integer", "minimum": 1 }
+                          },
+                          "required": ["type", "value"],
+                          "additionalProperties": false
+                        },
+                        "value": {
+                          "description": "`value` will be added to the current SR.",
+                          "type": "integer",
+                          "minimum": -10,
+                          "maximum": 10
+                        }
+                      },
+                      "required": ["id", "value"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "enum": [
+                                  "LiturgicalChant",
+                                  "Ceremony"
+                                ]
+                              },
+                              "value": { "type": "integer", "minimum": 1 }
+                            },
+                            "required": ["type", "value"],
+                            "additionalProperties": false
+                          },
+                          "value": {
+                            "type": "integer",
+                            "minimum": -10,
+                            "maximum": 10
+                          }
+                        },
+                        "required": ["id", "value"],
+                        "additionalProperties": false
+                      },
+                      "minItems": 2
+                    }
+                  ]
+                },
+                "minItems": 1
+              },
+              "blessings": {
+                "description": "The list of blessings to activate for the profession variant.",
+                "type": "array",
+                "items": { "type": "integer", "minimum": 1 },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "translations": {
+                "type": "object",
+                "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                "patternProperties": {
+                  "^[a-z]{2}-[A-Z]{2}$": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "description": "The name.",
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          { "$ref": "#/definitions/NameBySex"}
+                        ]
+                      },
+                      "precedingText": {
+                        "description": "Prepends this string to the generated string.",
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "fullText": {
+                        "description": "Replaces the generated string with this string.",
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "concludingText": {
+                        "description": "Appends this string to the generated string.",
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": ["name"],
+                    "additionalProperties": false
+                  }
+                },
+                "minProperties": 1,
+                "additionalProperties": false
+              }
+            },
+            "required": ["id", "apValue", "translations"],
+            "additionalProperties": false
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "isVariantRequired": {
+          "description": "Whether a variant has to be selected by the user (`true`) or selecting a variant is optional (`false`).",
+          "default": false,
+          "type": "boolean"
+        },
+        "curriculum": {
+          "description": "The curriculum's id.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "group": {
+          "description": "The profession group(s).",
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": ["Mundane"]
+                },
+                "value": {
+                  "enum": ["Profane", "Fighter", "Religious"]
+                }
+              },
+              "required": ["type", "value"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": ["Magical", "Blessed"]
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "src": { "$ref": "_SourceRefs.schema.json" },
+        "translations": {
+          "type": "object",
+          "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+          "patternProperties": {
+            "^[a-z]{2}-[A-Z]{2}$": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "description": "The name.",
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    { "$ref": "#/definitions/NameBySex" }
+                  ]
+                },
+                "subname": {
+                  "description": "A name addition of the profession. This will contain texts like name of the academy or the witch circle.",
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    { "$ref": "#/definitions/NameBySex" }
+                  ]
+                },
+                "prerequisitesStart": {
+                  "description": "Prepends the provided string to the main prerequisites string.",
+                  "type": "string",
+                  "minLength": 1
+                },
+                "suggestedAdvantages": {
+                  "description": " A text describing suggested advantages.",
+                  "type": "string",
+                  "minLength": 1
+                },
+                "suggestedDisadvantages": {
+                  "description": "A text describing suggested disadvantages.",
+                  "type": "string",
+                  "minLength": 1
+                },
+                "unsuitableAdvantages": {
+                  "description": "A text describing unsuitable advantages.",
+                  "type": "string",
+                  "minLength": 1
+                },
+                "unsuitableDisadvantages": {
+                  "description": "The respective unsuitable disadvantages text from the source book.",
+                  "type": "string",
+                  "minLength": 1
+                },
+                "errata": { "$ref": "_Errata.schema.json" }
+              },
+              "required": ["name"],
+              "additionalProperties": false
+            }
+          },
+          "minProperties": 1,
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "group", "isVariantRequired", "src", "translations"],
+      "additionalProperties": false,
+      "dependencies": {
+        "variants": ["isVariantRequired"]
+      }
+    },
+    "NameBySex": {
+      "title": "Name By Sex",
+      "description": "If a profession name is different for male and female heroes, use this object.",
+      "type": "object",
+      "properties": {
+        "m": {
+          "description": "Male name",
+          "type": "string",
+          "minLength": 1
+        },
+        "f": {
+          "description": "Female name",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": ["m", "f"],
+      "additionalProperties": false
+    },
+    "SpecialAbility": {
+      "title": "Special Ability",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "GeneralSpecialAbility",
+                "FatePointSpecialAbility",
+                "CombatSpecialAbility",
+                "MagicalSpecialAbility",
+                "StaffEnchantment",
+                "FamiliarSpecialAbility",
+                "KarmaSpecialAbility",
+                "ProtectiveWardingCircleSpecialAbility",
+                "CombatStyleSpecialAbility",
+                "AdvancedCombatSpecialAbility",
+                "CommandSpecialAbility",
+                "MagicStyleSpecialAbility",
+                "AdvancedMagicalSpecialAbility",
+                "SpellSwordEnchantment",
+                "DaggerRitual",
+                "InstrumentEnchantment",
+                "AttireEnchantment",
+                "OrbEnchantment",
+                "WandEnchantment",
+                "BrawlingSpecialAbility",
+                "AncestorGlyph",
+                "CeremonialItemSpecialAbility",
+                "Sermon",
+                "LiturgicalStyleSpecialAbility",
+                "AdvancedKarmaSpecialAbility",
+                "Vision",
+                "MagicalTradition",
+                "BlessedTradition",
+                "PactGift",
+                "SikaryanDrainSpecialAbility",
+                "LycantropicGift",
+                "SkillStyleSpecialAbility",
+                "AdvancedSkillSpecialAbility",
+                "ArcaneOrbEnchantment",
+                "CauldronEnchantment",
+                "FoolsHatEnchantment",
+                "ToyEnchantment",
+                "BowlEnchantment",
+                "FatePointSexSpecialAbility",
+                "SexSpecialAbility",
+                "WeaponEnchantment",
+                "SickleRitual",
+                "RingEnchantment",
+                "ChronicleEnchantment"
+              ]
+            },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        },
+        "level": {
+          "description": "The current or required level of the entry.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "options": {
+          "description": "Required select options. Order is important. Typically, you only need the first array index, though.",
+          "type": "array",
+          "items": {
+            "description": "A select option's ID.",
+            "oneOf": [
+              { "type": "integer" },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": ["Skill", "MeleeCombatTechnique", "RangedCombatTechnique"]
+                  },
+                  "value": { "type": "integer", "minimum": 1 }
+                },
+                "required": ["type", "value"],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["id"],
+      "additionalProperties": false
+    },
+    "SpecialAbilitySelection": {
+      "title": "Special Ability Selection",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SpecialAbility" },
+      "minItems": 2
+    },
+    "VariantSpecialAbility": {
+      "title": "Special Ability",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "GeneralSpecialAbility",
+                "FatePointSpecialAbility",
+                "CombatSpecialAbility",
+                "MagicalSpecialAbility",
+                "StaffEnchantment",
+                "FamiliarSpecialAbility",
+                "KarmaSpecialAbility",
+                "ProtectiveWardingCircleSpecialAbility",
+                "CombatStyleSpecialAbility",
+                "AdvancedCombatSpecialAbility",
+                "CommandSpecialAbility",
+                "MagicStyleSpecialAbility",
+                "AdvancedMagicalSpecialAbility",
+                "SpellSwordEnchantment",
+                "DaggerRitual",
+                "InstrumentEnchantment",
+                "AttireEnchantment",
+                "OrbEnchantment",
+                "WandEnchantment",
+                "BrawlingSpecialAbility",
+                "AncestorGlyph",
+                "CeremonialItemSpecialAbility",
+                "Sermon",
+                "LiturgicalStyleSpecialAbility",
+                "AdvancedKarmaSpecialAbility",
+                "Vision",
+                "MagicalTradition",
+                "BlessedTradition",
+                "PactGift",
+                "SikaryanDrainSpecialAbility",
+                "LycantropicGift",
+                "SkillStyleSpecialAbility",
+                "AdvancedSkillSpecialAbility",
+                "ArcaneOrbEnchantment",
+                "CauldronEnchantment",
+                "FoolsHatEnchantment",
+                "ToyEnchantment",
+                "BowlEnchantment",
+                "FatePointSexSpecialAbility",
+                "SexSpecialAbility",
+                "WeaponEnchantment",
+                "SickleRitual",
+                "RingEnchantment",
+                "ChronicleEnchantment"
+              ]
+            },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        },
+        "active": {
+          "description": "If the required entry should be required to be active or inactive.",
+          "const": false
+        },
+        "level": {
+          "description": "The current or required level of the entry.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "options": {
+          "description": "Required select options. Order is important. Typically, you only need the first array index, though.",
+          "type": "array",
+          "items": {
+            "description": "A select option's ID.",
+            "oneOf": [
+              { "type": "integer" },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": ["Skill", "MeleeCombatTechnique", "RangedCombatTechnique"]
+                  },
+                  "value": { "type": "integer", "minimum": 1 }
+                },
+                "required": ["type", "value"],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["id"],
+      "additionalProperties": false
+    },
+    "SkillSpecializationSelectOptions": {
+      "title": "Skill Specialization Select Options",
+      "description": "Select an application of a skill or of one of a list of skills where you get a specialization for. You can also specify one or multiple skill groups from which you can choose a spell.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": ["Single", "Group"]
+            },
+            "value": {
+              "oneOf": [
+                { "type": "integer", "minimum": 1 },
+                {
+                  "type": "array",
+                  "items": { "type": "integer", "minimum": 1 },
+                  "minItems": 2
+                }
+              ]
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": ["Single", "Group"]
+              },
+              "value": {
+                "oneOf": [
+                  { "type": "integer", "minimum": 1 },
+                  {
+                    "type": "array",
+                    "items": { "type": "integer", "minimum": 1 },
+                    "minItems": 2
+                  }
+                ]
+              }
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "LanguageScriptSelectOptions": {
+      "title": "Language Script Select Options",
+      "description": "Buy languages and scripts for a specific amount of AP.",
+      "type": "integer",
+      "minimum": 2,
+      "multipleOf": 2
+    },
+    "CombatTechniqueSelectOptions": {
+      "title": "Combat Technique Select Options",
+      "description": "Select one or more combat techniques you get a CtR bonus for.",
+      "type": "object",
+      "properties": {
+        "fixed": {
+          "description": "Specify the number of combat techniques that can be selected so that they get increased to a specific CtR. There can be multiple selections with different CtRs.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "number": {
+                "description": "Number of selectable CTs",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2
+              },
+              "value": {
+                "description": "The value by which the CtRs will be increased (The base CtR is 6, to get e.g. a CtR of 8, `value` equals 2)",
+                "type": "integer",
+                "minimum": 2,
+                "maximum": 6
+              }
+            },
+            "required": ["number", "value"],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "rest": {
+          "description": "Define if after the fixed selections the remaining unselected combat techniques' CtRs are increased by a value as well (The base CtR is 6, to get e.g. a CtR of 8, this field's value needs to equal 2)",
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 6
+        },
+        "targets": {
+          "description": "An array containing the combat technique ids.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": [
+                  "MeleeCombatTechnique",
+                  "RangedCombatTechnique"
+                ]
+              },
+              "value": { "type": "integer", "minimum": 1 }
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
+          },
+          "minItems": 2
+        }
+      },
+      "required": ["fixed", "targets"],
+      "additionalProperties": false
+    },
+    "CantripSelectOptions": {
+      "title": "Cantrip Select Options",
+      "description": "Select one or more cantrips you receive.",
+      "type": "object",
+      "properties": {
+        "number": {
+          "description": "Number of selectable cantrips.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2
+        },
+        "targets": {
+          "description": "An array containing the cantrip ids.",
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 },
+          "minItems": 2
+        }
+      },
+      "required": ["number", "targets"],
+      "additionalProperties": false
+    },
+    "CurseSelectOptions": {
+      "title": "Curse Select Options",
+      "description": "Buy curses for a specific amount of AP.",
+      "type": "integer",
+      "minimum": 2,
+      "multipleOf": 2
+    },
+    "SkillSelectOptions": {
+      "title": "Skill Select Options",
+      "description": "Buy skills for a specific amount of AP.",
+      "type": "object",
+      "properties": {
+        "gr": {
+          "description": "If specified, you may only choose from skills of the specified group.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "value": {
+          "description": "The AP value the user can spend.",
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": ["value"],
+      "additionalProperties": false
+    },
+    "TerrainKnowledgeSelectOptions": {
+      "title": "Terrain Knowledge Select Options",
+      "description": "Select one of a list of possible terrain knowledges. The IDs equal the selection IDs used by the special ability.",
+      "type": "array",
+      "items": { "type": "integer", "minimum": 1, "maximum": 10 },
+      "minItems": 2
+    },
+    "SuggestedUnsuitable": {
+      "title": "Suggested/Unsuitable Advantage/Disadvantage",
+      "description": "Select one of a list of possible terrain knowledges. The IDs equal the selection IDs used by the special ability.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["id"],
+      "additionalProperties": true
+    }
+  }
+}

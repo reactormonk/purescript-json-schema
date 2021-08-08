@@ -1,0 +1,179 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/MagicalTradition.schema.json",
+  "title": "Magical Tradition",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "_Activatable.schema.json#/definitions/Id" },
+        "levels": { "$ref": "_Activatable.schema.json#/definitions/Levels" },
+        "max": { "$ref": "_Activatable.schema.json#/definitions/Maximum" },
+        "selectOptions": { "$ref": "_Activatable.schema.json#/definitions/SelectOptions" },
+        "skillApplications": { "$ref": "_Activatable.schema.json#/definitions/SkillApplications" },
+        "skillUses": { "$ref": "_Activatable.schema.json#/definitions/SkillUses" },
+        "primary": {
+          "description": "The tradition's primary attribute. Leave empty if the tradition does not have one.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "useHalfPrimaryForAE": {
+          "description": "Typically, the value of the primary attribute (if one exists) is added onto the base of 20 AE to get the actual AE. But sometimes, only half the value is added.",
+          "type": "boolean"
+        },
+        "canLearnCantrips": {
+          "description": "Can a member of the tradition learn cantrips?",
+          "type": "boolean"
+        },
+        "canLearnSpells": {
+          "description": "Can a member of the tradition learn spells?",
+          "type": "boolean"
+        },
+        "canLearnRituals": {
+          "description": "Can a member of the tradition learn rituals?",
+          "type": "boolean"
+        },
+        "canBindFamiliars": {
+          "description": "Can this magical tradition bind familiars?",
+          "type": "boolean"
+        },
+        "allowMultipleTraditions": {
+          "description": "Does the tradition allow learning more traditions or having learned a different tradition before learning this tradition?",
+          "type": "boolean"
+        },
+        "alternativeDisAdvAPMax": {
+          "description": "Is the maximum AP you're able to spent on magical advantages and able to get by magical disadvantages different than the default of 50 AP?",
+          "type": "integer",
+          "enum": [25, 30]
+        },
+        "areDisAdvRequiredApplyToMagActionsOrApps": {
+          "description": "Are advantages/disadvantages required to not exclusively apply to arcane spellworks, but also to the tradition's magical actions or applications?",
+          "type": "boolean"
+        },
+        "isMagicalDilettante": {
+          "description": "Is this a magical dilettante tradition?",
+          "type": "boolean"
+        },
+        "useArcaneSpellworksFromTradition": {
+          "description": "If arcane spellworks from a different tradition count as arcane spellworks of this tradition, insert the different tradition's id here.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "influences": {
+          "description": "The Influences for the traditions. Influences are enabled by Focus Rules.",
+          "type": "array",
+          "items": { "$ref": "_Influence.schema.json" },
+          "minItems": 2
+        },
+        "apValue": { "$ref": "_Activatable.schema.json#/definitions/ApValue" },
+        "prerequisites": {
+          "oneOf": [
+            { "$ref": "_PrerequisiteGroups.schema.json#/definitions/GeneralCollection" },
+            {
+              "type": "object",
+              "properties": {
+                "type": { "const": "Ineligible" }
+              },
+              "required": ["type"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "src": { "$ref": "_SourceRefs.schema.json" },
+        "translations": {
+          "type": "object",
+          "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+          "patternProperties": {
+            "^[a-z]{2}-[A-Z]{2}$": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "description": "The name.",
+                  "type": "string"
+                },
+                "nameForArcaneSpellworks": {
+                  "description": "The name used for the traditions list of arcane spellworks if it is different than the name of the special ability (\"name\").",
+                  "type": "string"
+                },
+                "nameInLibrary": { "$ref": "_Activatable.schema.json#/definitions/NameInLibrary" },
+                "input": { "$ref": "_Activatable.schema.json#/definitions/Input" },
+                "specialRules": {
+                  "description": "The special rules of the tradition. They should be sorted like they are in the book.",
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "label": {
+                        "description": "An optional label that is displayed and placed before the actual text.",
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "text": {
+                        "description": "The text of a special rule.",
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": ["text"],
+                    "additionalProperties": false
+                  }
+                },
+                "prerequisites": { "$ref": "_Activatable.schema.json#/definitions/PrerequisitesReplacement" },
+                "prerequisitesStart": { "$ref": "_Activatable.schema.json#/definitions/PrerequisitesStart" },
+                "prerequisitesEnd": { "$ref": "_Activatable.schema.json#/definitions/PrerequisitesEnd" },
+                "apValue": { "$ref": "_Activatable.schema.json#/definitions/ApValueReplacement" },
+                "apValueAppend": { "$ref": "_Activatable.schema.json#/definitions/ApValueAppend" },
+                "errata": { "$ref": "_Errata.schema.json" }
+              },
+              "required": ["name", "specialRules"],
+              "additionalProperties": false
+            }
+          },
+          "minProperties": 1,
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "canLearnCantrips", "canLearnSpells", "canLearnRituals", "canBindFamiliars", "allowMultipleTraditions", "areDisAdvRequiredApplyToMagActionsOrApps", "isMagicalDilettante", "src", "translations"],
+      "additionalProperties": false,
+      "dependencies": {
+        "useHalfPrimaryForAE": ["primary"]
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "An unique, increasing integer.",
+          "type": "integer",
+          "minimum": 1000
+        },
+        "isPlaceholder": {
+          "description": "Is this a placeholder tradition that has not been defined properly?",
+          "const": true
+        },
+        "translations": {
+          "type": "object",
+          "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+          "patternProperties": {
+            "^[a-z]{2}-[A-Z]{2}$": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "description": "The name.",
+                  "type": "string"
+                }
+              },
+              "required": ["name"],
+              "additionalProperties": false
+            }
+          },
+          "minProperties": 1,
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "isPlaceholder", "translations"],
+      "additionalProperties": false
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/AnimistPower.schema.json",
+  "title": "Animist Power",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "check": { "$ref": "_SkillCheck.schema.json" },
+    "costFromPrimaryPatron": {
+      "description": "This property needs to be defined if the AE cost should be derived from the primary patron. You can use a placeholder (\"{0}\") can be used which gets replaced with the patron-specific cost. You can use another placeholder (\"{1}\") to insert half that value, if needed.",
+      "type": "object",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "description": "The AE cost.",
+          "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    },
+    "property": {
+      "description": "The property ID.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "tribes": {
+      "description": "The tribes the animist force is available for. Leave empty if it is available to all tribes.",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 6
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "ic": {
+      "description": "Improvement cost.",
+      "enum": ["A", "B", "C", "D", "DeriveFromPrimaryPatron"]
+    },
+    "prerequisites": {
+      "$ref": "_PrerequisiteGroups.schema.json#/definitions/AnimistPowerCollection"
+    },
+    "levels": {
+      "description": "The animist power can have multiple levels. Each level is skilled separately. A previous level must be on at least 10 so that the next higher level can be activated and skilled. A higher level cannot be skilled higher than a lower level. Each level also adds an effect text to the text of the first level.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "description": "The level number.",
+            "type": "integer",
+            "minimum": 2
+          },
+          "src": { "$ref": "_SourceRefs.schema.json" },
+          "translations": {
+            "type": "object",
+            "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+            "patternProperties": {
+              "^[a-z]{2}-[A-Z]{2}$": {
+                "type": "object",
+                "properties": {
+                  "effect": {
+                    "description": "An additional effect description for this level. Markdown is available.",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": ["effect"],
+                "additionalProperties": false
+              }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+          }
+        },
+        "required": ["level", "translations"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the animist force.",
+              "type": "string",
+              "minLength": 1
+            },
+            "effect": {
+              "description": "The effect description. Markdown is available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "cost": {
+              "description": "The AE cost.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "duration": {
+              "description": "The duration.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "prerequisites": {
+              "description": "A prerequisites text.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "effect", "cost", "duration"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "check", "property", "ic", "src", "translations"],
+  "additionalProperties": false
+}

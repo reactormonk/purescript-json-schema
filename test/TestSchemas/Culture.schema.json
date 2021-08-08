@@ -1,0 +1,303 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Culture.schema.json",
+  "title": "Culture",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "languages": {
+      "description": "A list of native languages (usually it is only one).",
+      "type": "array",
+      "items": {
+        "description": "Language ID",
+        "type": "integer",
+        "minimum": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "literacy": {
+      "description": "A list of native literacy (usually it is only one). If the culture does not use any script, leave this field empty.",
+      "type": "array",
+      "items": {
+        "description": "Script ID",
+        "type": "integer",
+        "minimum": 1
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "social": {
+      "description": "A list of possible social status in the respective culture.",
+      "type": "array",
+      "items": {
+        "description": "Script ID",
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "commonMundaneProfessionsAll": {
+      "description": "If all mundane professions are common for this culture or not. Exceptions can be specified in `commonMundaneProfessionsExceptions`.",
+      "type": "boolean"
+    },
+    "commonMundaneProfessionsExceptions": {
+      "description": "If `commonMundaneProfessionsAll` is `true`, listed professions (string id) or profession groups are excluded from common professions list. If `commonMundaneProfessionsAll` is `false` (or empty), listed professions (string id) or profession groups are the only common mundane professions.",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": ["Single"]
+              },
+              "value": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": ["Group"]
+              },
+              "value": {
+                "enum": ["Profane", "Fighter", "Religious"]
+              }
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "minItems": 1
+    },
+    "commonMagicalProfessionsAll": {
+      "description": "If all magical professions are common for this culture or not. Exceptions can be specified in `commonMagicalProfessionsExceptions`.",
+      "type": "boolean"
+    },
+    "commonMagicalProfessionsExceptions": {
+      "description": "If `commonMagicalProfessionsAll` is `true`, listed professions (string id) or profession groups are excluded from common professions list. If `commonMagicalProfessionsAll` is `false` (or empty), listed professions (string id) or profession groups are the only common magical professions.",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": ["Single"]
+              },
+              "value": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": ["Tradition"]
+              },
+              "value": {
+                "description": "The magical tradition's identifier.",
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "minItems": 1
+    },
+    "commonBlessedProfessionsAll": {
+      "description": "If all blessed professions are common for this culture or not. Exceptions can be specified in `commonBlessedProfessionsExceptions`.",
+      "type": "boolean"
+    },
+    "commonBlessedProfessionsExceptions": {
+      "description": "If `commonBlessedProfessionsAll` is `true`, listed professions (string id) or profession groups are excluded from common professions list. If `commonBlessedProfessionsAll` is `false` (or empty), listed professions (string id) or profession groups are the only common blessed professions.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": ["Single"]
+          },
+          "value": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": ["type", "value"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "commonAdvantages": {
+      "description": "A list of common advantages.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "commonDisadvantages": {
+      "description": "A list of common disadvantages.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "uncommonAdvantages": {
+      "description": "A list of uncommon advantages.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "uncommonDisadvantages": {
+      "description": "A list of uncommon disadvantages.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "commonSkills": {
+      "description": "A list of common skills.",
+      "type": "array",
+      "items": { "type": "integer", "minimum": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "uncommonSkills": {
+      "description": "A list of uncommon skills.",
+      "type": "array",
+      "items": { "type": "integer", "minimum": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "culturalPackageSkills": {
+      "description": "The skill points you get for buying the culture package.",
+      "type": "array",
+      "items": {
+        "title": "Cultural Package Skill",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "value": {
+            "description": "The skill points for the respective skill you get for buying the cultural package.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          }
+        },
+        "required": ["id", "value"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the culture.",
+              "type": "string",
+              "minLength": 1
+            },
+            "areaKnowledge": {
+              "description": "The full description of possible area knowledges.",
+              "type": "string",
+              "minLength": 1
+            },
+            "areaKnowledgeShort": {
+              "description": "The type of area knowledge.",
+              "type": "string",
+              "minLength": 1
+            },
+            "commonMundaneProfessions": {
+              "description": "The text describing common mundane professions.",
+              "type": "string",
+              "minLength": 1
+            },
+            "commonMagicalProfessions": {
+              "description": "The text describing common magical professions.",
+              "type": "string",
+              "minLength": 1
+            },
+            "commonBlessedProfessions": {
+              "description": "The text describing common blessed professions.",
+              "type": "string",
+              "minLength": 1
+            },
+            "commonAdvantages": {
+              "description": "A text describing common advantages.",
+              "type": "string",
+              "minLength": 1
+            },
+            "commonDisadvantages": {
+              "description": "A text describing common disadvantages.",
+              "type": "string",
+              "minLength": 1
+            },
+            "uncommonAdvantages": {
+              "description": "A text describing uncommon advantages.",
+              "type": "string",
+              "minLength": 1
+            },
+            "uncommonDisadvantages": {
+              "description": "A text describing uncommon disadvantages.",
+              "type": "string",
+              "minLength": 1
+            },
+            "commonNames": {
+              "description": "A text describing common names.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "areaKnowledge", "areaKnowledgeShort", "commonNames"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "languages", "social", "commonMundaneProfessionsAll", "commonMagicalProfessionsAll", "commonBlessedProfessionsAll", "commonSkills", "culturalPackageSkills", "src", "translations"],
+  "additionalProperties": false,
+  "definitions": {
+    "SuggestedUnsuitable": {
+      "title": "Suggested/Unsuitable Advantage/Disadvantage",
+      "description": "Select one of a list of possible terrain knowledges. The IDs equal the selection IDs used by the special ability.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["id"],
+      "additionalProperties": true
+    }
+  }
+}

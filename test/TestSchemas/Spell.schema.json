@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Spell.schema.json",
+  "title": "Spell",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "check": { "$ref": "_SkillCheck.schema.json" },
+    "checkMod": {
+      "description": "If the check will be modified by Spirit (Seelenkraft) or Toughness (Zähigkeit), insert `SPI` or `TOU` respectively. If the higher is the characteristic to choose, insert an array with both instead.",
+      "enum": ["SPI", "SPI/2", "TOU", "SPI/TOU"]
+    },
+    "ic": {
+      "description": "Improvement cost.",
+      "enum": ["A", "B", "C", "D"]
+    },
+    "traditions": {
+      "description": "The tradition(s) the spell is available for. The integers represent the tradition identifiers. Use an empty array to express the general availability to all traditions.",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "uniqueItems": true
+    },
+    "traditionPlaceholders": {
+      "description": "The tradition(s) the spell is available for, but where the traditions does not exist as an SA yet. The integers represent the tradition placeholder identifiers. ",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "uniqueItems": true
+    },
+    "property": {
+      "description": "The property ID.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "castingTimeNoMod":  {
+      "description": "Is the casting time not modifiable?",
+      "type": "boolean"
+    },
+    "costNoMod": {
+      "description": "Is the AE cost not modifiable?",
+      "type": "boolean"
+    },
+    "rangeNoMod":  {
+      "description": "Is the range not modifiable?",
+      "type": "boolean"
+    },
+    "durationNoMod": {
+      "description": "Is the duration not modifiable?",
+      "type": "boolean"
+    },
+    "prerequisites": {
+      "description": "A list of prerequisites that have to be met.",
+      "$ref": "_PrerequisiteGroups.schema.json#/definitions/SpellworkCollection"
+    },
+    "enhancements": { "$ref": "_Enhancements.schema.json" },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the spell.",
+              "type": "string",
+              "minLength": 1
+            },
+            "effect": {
+              "description": "The effect description. Markdown is available. If the effect is different for different quality levels, use \"effectQualityLevels\". If there is general effect text after the list of quality levels, use \"effectAfterQualityLevels\" for that.",
+              "type": "string",
+              "minLength": 1
+            },
+            "effectQualityLevels": { "$ref": "_ActivatableSkill.schema.json#/definitions/QualityLevels" },
+            "effectAfterQualityLevels": {
+              "description": "The effect description after the quality levels list. Markdown is available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "castingTime": {
+              "description": "The casting/ritual time. Markdown is available.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "cost": {
+              "description": "The AE cost.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "range": {
+              "description": "The range.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "duration": {
+              "description": "The duration.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "target": {
+              "description": "The target category.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "effect", "castingTime", "cost", "range", "duration", "target"],
+          "additionalProperties": false,
+          "dependencies": {
+            "effectAfterQualityLevels": ["effectQualityLevels"]
+          }
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "check", "ic", "traditions", "property", "castingTimeNoMod", "costNoMod", "rangeNoMod", "durationNoMod", "src", "translations"],
+  "additionalProperties": false
+}

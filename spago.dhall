@@ -15,10 +15,12 @@ to generate this file without the comments in this block.
   [ "console"
   , "effect"
   , "foreign-object"
+  , "node-fs-aff"
   , "prelude"
   , "psci-support"
   , "simple-json"
   , "spec"
+  , "transformers"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

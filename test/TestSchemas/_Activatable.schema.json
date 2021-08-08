@@ -1,0 +1,1840 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/_Activatable.schema.json",
+  "title": "Activatable",
+  "type": "object",
+  "definitions": {
+    "Id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "Name": {
+      "description": "The name of the entry.",
+      "type": "string",
+      "minLength": 1
+    },
+    "NameInLibrary": {
+      "description": "The name of the entry shown in Wiki. Only use when `name` needs to be different from full name.",
+      "type": "string",
+      "minLength": 1
+    },
+    "Levels": {
+      "description": "Number of available levels (also called \"tiers\" sometimes).",
+      "type": "integer",
+      "minimum": 2
+    },
+    "Maximum": {
+      "description": "The number of possible activations. An empty field represents no limit. You will also have to set no limit if the number of activations is limited to the available selection. If you have to use this, you will have to contact the developer; it has to be implemented separately.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "SelectOptions": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "Derived" },
+            "value": {
+              "description": "A list of category ids. All available entries from the specified category/ies will be included as separate select options. You can also specify a set of groups that should only be included. Groups not mentioned will be excluded then.",
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "Blessings",
+                          "Cantrips",
+                          "TradeSecrets",
+                          "Scripts",
+                          "AnimalShapes",
+                          "ArcaneBardTraditions",
+                          "ArcaneDancerTraditions",
+                          "SexPractices",
+                          "Races",
+                          "Cultures"
+                        ]
+                      }
+                    },
+                    "required": ["category"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "BlessedTraditions"
+                        ]
+                      },
+                      "requirePrinciples": {
+                        "description": "Should the principles (code) of the tradition be required to select the respective tradition?",
+                        "type": "boolean"
+                      }
+                    },
+                    "required": ["category"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "Elements"
+                        ]
+                      },
+                      "specific": {
+                        "description": "Only include entries with the listed ids.",
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      }
+                    },
+                    "required": ["category"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "Properties"
+                        ]
+                      },
+                      "requireKnowledge": {
+                        "description": "Does each aspect/property require it's corresponding aspect/property knowledge?",
+                        "type": "boolean"
+                      },
+                      "requireSkillRating": {
+                        "type": "object",
+                        "properties": {
+                          "number": {
+                            "description": "The minimum number of skills that need to be on the defined minimum skill rating.",
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "value": {
+                            "description": "The minimum skill rating the defined minimum number of skills need to be on.",
+                            "type": "integer",
+                            "minimum": 1
+                          }
+                        },
+                        "required": ["number", "value"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["category"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "Aspects"
+                        ]
+                      },
+                      "requireKnowledge": {
+                        "description": "Does each aspect/property require it's corresponding aspect/property knowledge?",
+                        "type": "boolean"
+                      },
+                      "useMasterOfSuffixAsName": {
+                        "description": "The generated name should be the Master of (Aspect) suffix for this aspect instead of the aspect's name. If an aspect does not provide a suffix (such as the General aspect), it is automatically excluded from the list.",
+                        "type": "boolean"
+                      },
+                      "requireSkillRating": {
+                        "type": "object",
+                        "properties": {
+                          "number": {
+                            "description": "The minimum number of skills that need to be on the defined minimum skill rating.",
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "value": {
+                            "description": "The minimum skill rating the defined minimum number of skills need to be on.",
+                            "type": "integer",
+                            "minimum": 1
+                          }
+                        },
+                        "required": ["number", "value"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["category"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "Diseases",
+                          "Poisons"
+                        ]
+                      },
+                      "useHalfLevelAsApValue": {
+                        "description": "Only convert half the entry level into the AP value.",
+                        "type": "boolean"
+                      }
+                    },
+                    "required": ["category"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "Languages"
+                        ]
+                      },
+                      "prerequisites": {
+                        "description": "Generate prerequisites for each entry of the category.",
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "description": "The entry requires or prohibits itself as a select option of another entry.",
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "const": "SelectOption"
+                            },
+                            "value": {
+                              "type": "object",
+                              "properties": {
+                                "target": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "enum": [
+                                        "Advantage",
+                                        "Disadvantage",
+                                        "GeneralSpecialAbility",
+                                        "FatePointSpecialAbility",
+                                        "CombatSpecialAbility",
+                                        "MagicalSpecialAbility",
+                                        "StaffEnchantment",
+                                        "FamiliarSpecialAbility",
+                                        "KarmaSpecialAbility",
+                                        "ProtectiveWardingCircleSpecialAbility",
+                                        "CombatStyleSpecialAbility",
+                                        "AdvancedCombatSpecialAbility",
+                                        "CommandSpecialAbility",
+                                        "MagicStyleSpecialAbility",
+                                        "AdvancedMagicalSpecialAbility",
+                                        "SpellSwordEnchantment",
+                                        "DaggerRitual",
+                                        "InstrumentEnchantment",
+                                        "AttireEnchantment",
+                                        "OrbEnchantment",
+                                        "WandEnchantment",
+                                        "BrawlingSpecialAbility",
+                                        "AncestorGlyph",
+                                        "CeremonialItemSpecialAbility",
+                                        "Sermon",
+                                        "LiturgicalStyleSpecialAbility",
+                                        "AdvancedKarmaSpecialAbility",
+                                        "Vision",
+                                        "MagicalTradition",
+                                        "BlessedTradition",
+                                        "PactGift",
+                                        "SikaryanDrainSpecialAbility",
+                                        "LycantropicGift",
+                                        "SkillStyleSpecialAbility",
+                                        "AdvancedSkillSpecialAbility",
+                                        "ArcaneOrbEnchantment",
+                                        "CauldronEnchantment",
+                                        "FoolsHatEnchantment",
+                                        "ToyEnchantment",
+                                        "BowlEnchantment",
+                                        "FatePointSexSpecialAbility",
+                                        "SexSpecialAbility",
+                                        "WeaponEnchantment",
+                                        "SickleRitual",
+                                        "RingEnchantment",
+                                        "ChronicleEnchantment"
+                                      ]
+                                    },
+                                    "value": { "type": "integer", "minimum": 1 }
+                                  },
+                                  "required": ["type", "value"],
+                                  "additionalProperties": false
+                                },
+                                "active": {
+                                  "description": "Is the select option required (true) or prohibited (false)?",
+                                  "type": "boolean"
+                                },
+                                "level": {
+                                  "description": "The required level",
+                                  "type": "integer",
+                                  "minimum": 2
+                                }
+                              },
+                              "required": ["target", "active"],
+                              "additionalProperties": false
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "required": ["category"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "Skills"
+                        ]
+                      },
+                      "groups": {
+                        "description": "Only include entries of the specified groups.",
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 1
+                      },
+                      "specific": {
+                        "description": "Only include entries with the listed ids.",
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      },
+                      "exclude": {
+                        "description": "Exclude entries with the listed ids. This has no effect if \"specific\" is used.",
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      },
+                      "skillApplications": {
+                        "description": "Registers new applications, which get enabled once this entry is activated with its respective select option. It specifies an entry-unique identifier, the skill it belongs to is derived from the select option automatically. A translation can be left out if its name equals the name of the origin entry.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "description": "An unique, increasing integer, identifying the application in the entry it is registered for.",
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "translations": {
+                              "type": "object",
+                              "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                              "patternProperties": {
+                                "^[a-z]{2}-[A-Z]{2}$": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1
+                                    }
+                                  },
+                                  "required": ["name"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "minProperties": 1,
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": ["id"],
+                          "additionalProperties": false
+                        },
+                        "minItems": 1
+                      },
+                      "skillUses": {
+                        "description": "Registers uses, which get enabled once this entry is activated with its respective select option. It specifies an entry-unique identifier, the skill it belongs to is derived from the select option automatically. A translation can be left out if its name equals the name of the origin entry.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "description": "An unique, increasing integer, identifying the use in the entry it is registered for.",
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "translations": {
+                              "type": "object",
+                              "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                              "patternProperties": {
+                                "^[a-z]{2}-[A-Z]{2}$": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1
+                                    }
+                                  },
+                                  "required": ["name"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "minProperties": 1,
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": ["id"],
+                          "additionalProperties": false
+                        },
+                        "minItems": 1
+                      },
+                      "prerequisites": {
+                        "description": "Generate prerequisites for each entry of the category.",
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "oneOf": [
+                            {
+                              "description": "The entry requires itself on a certain Skill Rating.",
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "const": "Self"
+                                },
+                                "value": { "type": "integer", "minimum": 1 }
+                              },
+                              "required": ["type", "value"],
+                              "additionalProperties": false
+                            },
+                            {
+                              "description": "The entry requires or prohibits itself as a select option of another entry.",
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "const": "SelectOption"
+                                },
+                                "value": {
+                                  "type": "object",
+                                  "properties": {
+                                    "target": {
+                                      "type": "object",
+                                      "properties": {
+                                        "type": {
+                                          "enum": [
+                                            "Advantage",
+                                            "Disadvantage",
+                                            "GeneralSpecialAbility",
+                                            "FatePointSpecialAbility",
+                                            "CombatSpecialAbility",
+                                            "MagicalSpecialAbility",
+                                            "StaffEnchantment",
+                                            "FamiliarSpecialAbility",
+                                            "KarmaSpecialAbility",
+                                            "ProtectiveWardingCircleSpecialAbility",
+                                            "CombatStyleSpecialAbility",
+                                            "AdvancedCombatSpecialAbility",
+                                            "CommandSpecialAbility",
+                                            "MagicStyleSpecialAbility",
+                                            "AdvancedMagicalSpecialAbility",
+                                            "SpellSwordEnchantment",
+                                            "DaggerRitual",
+                                            "InstrumentEnchantment",
+                                            "AttireEnchantment",
+                                            "OrbEnchantment",
+                                            "WandEnchantment",
+                                            "BrawlingSpecialAbility",
+                                            "AncestorGlyph",
+                                            "CeremonialItemSpecialAbility",
+                                            "Sermon",
+                                            "LiturgicalStyleSpecialAbility",
+                                            "AdvancedKarmaSpecialAbility",
+                                            "Vision",
+                                            "MagicalTradition",
+                                            "BlessedTradition",
+                                            "PactGift",
+                                            "SikaryanDrainSpecialAbility",
+                                            "LycantropicGift",
+                                            "SkillStyleSpecialAbility",
+                                            "AdvancedSkillSpecialAbility",
+                                            "ArcaneOrbEnchantment",
+                                            "CauldronEnchantment",
+                                            "FoolsHatEnchantment",
+                                            "ToyEnchantment",
+                                            "BowlEnchantment",
+                                            "FatePointSexSpecialAbility",
+                                            "SexSpecialAbility",
+                                            "WeaponEnchantment",
+                                            "SickleRitual",
+                                            "RingEnchantment",
+                                            "ChronicleEnchantment"
+                                          ]
+                                        },
+                                        "value": { "type": "integer", "minimum": 1 }
+                                      },
+                                      "required": ["type", "value"],
+                                      "additionalProperties": false
+                                    },
+                                    "active": {
+                                      "description": "Is the select option required (true) or prohibited (false)?",
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": ["target", "active"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": ["type", "value"],
+                              "additionalProperties": false
+                            }
+                          ]
+                        }
+                      },
+                      "apValue": {
+                        "description": "Generate AP values for each entry.",
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": { "const": "DerivedFromIC" },
+                              "value": {
+                                "description": "This number is multiplied with the IC of the entry (A = 1 to D = 4).",
+                                "type": "integer",
+                                "minimum": 2
+                              }
+                            },
+                            "required": ["type", "value"],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": { "const": "Fixed" },
+                              "value": {
+                                "type": "object",
+                                "properties": {
+                                  "list": {
+                                    "description": "A mapping of entry ids to their specific AP values.",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "description": "The entry id.",
+                                          "type": "integer",
+                                          "minimum": 1
+                                        },
+                                        "apValue": {
+                                          "description": "The AP value for the specified entry.",
+                                          "type": "integer",
+                                          "minimum": 1
+                                        }
+                                      },
+                                      "required": ["id", "apValue"],
+                                      "additionalProperties": false
+                                    },
+                                    "minItems": 1
+                                  },
+                                  "default": {
+                                    "description": "The default value of an entry. Used as a fallback if no value is found in \"list\"",
+                                    "type": "integer",
+                                    "minimum": 1
+                                  }
+                                },
+                                "required": ["list", "default"],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": ["type", "value"],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    },
+                    "required": ["category"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "MeleeCombatTechniques",
+                          "RangedCombatTechniques",
+                          "LiturgicalChants",
+                          "Ceremonies",
+                          "Spells",
+                          "Rituals"
+                        ]
+                      },
+                      "specific": {
+                        "description": "Only include entries with the listed ids.",
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      },
+                      "exclude": {
+                        "description": "Exclude entries with the listed ids. This has no effect if \"specific\" is used.",
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      },
+                      "prerequisites": {
+                        "description": "Generate prerequisites for each entry of the category.",
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "oneOf": [
+                            {
+                              "description": "The entry requires itself on a certain Skill Rating.",
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "const": "Self"
+                                },
+                                "value": { "type": "integer", "minimum": 1 }
+                              },
+                              "required": ["type", "value"],
+                              "additionalProperties": false
+                            },
+                            {
+                              "description": "The entry requires or prohibits itself as a select option of another entry.",
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "const": "SelectOption"
+                                },
+                                "value": {
+                                  "type": "object",
+                                  "properties": {
+                                    "target": {
+                                      "type": "object",
+                                      "properties": {
+                                        "type": {
+                                          "enum": [
+                                            "Advantage",
+                                            "Disadvantage",
+                                            "GeneralSpecialAbility",
+                                            "FatePointSpecialAbility",
+                                            "CombatSpecialAbility",
+                                            "MagicalSpecialAbility",
+                                            "StaffEnchantment",
+                                            "FamiliarSpecialAbility",
+                                            "KarmaSpecialAbility",
+                                            "ProtectiveWardingCircleSpecialAbility",
+                                            "CombatStyleSpecialAbility",
+                                            "AdvancedCombatSpecialAbility",
+                                            "CommandSpecialAbility",
+                                            "MagicStyleSpecialAbility",
+                                            "AdvancedMagicalSpecialAbility",
+                                            "SpellSwordEnchantment",
+                                            "DaggerRitual",
+                                            "InstrumentEnchantment",
+                                            "AttireEnchantment",
+                                            "OrbEnchantment",
+                                            "WandEnchantment",
+                                            "BrawlingSpecialAbility",
+                                            "AncestorGlyph",
+                                            "CeremonialItemSpecialAbility",
+                                            "Sermon",
+                                            "LiturgicalStyleSpecialAbility",
+                                            "AdvancedKarmaSpecialAbility",
+                                            "Vision",
+                                            "MagicalTradition",
+                                            "BlessedTradition",
+                                            "PactGift",
+                                            "SikaryanDrainSpecialAbility",
+                                            "LycantropicGift",
+                                            "SkillStyleSpecialAbility",
+                                            "AdvancedSkillSpecialAbility",
+                                            "ArcaneOrbEnchantment",
+                                            "CauldronEnchantment",
+                                            "FoolsHatEnchantment",
+                                            "ToyEnchantment",
+                                            "BowlEnchantment",
+                                            "FatePointSexSpecialAbility",
+                                            "SexSpecialAbility",
+                                            "WeaponEnchantment",
+                                            "SickleRitual",
+                                            "RingEnchantment",
+                                            "ChronicleEnchantment"
+                                          ]
+                                        },
+                                        "value": { "type": "integer", "minimum": 1 }
+                                      },
+                                      "required": ["type", "value"],
+                                      "additionalProperties": false
+                                    },
+                                    "active": {
+                                      "description": "Is the select option required (true) or prohibited (false)?",
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": ["target", "active"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": ["type", "value"],
+                              "additionalProperties": false
+                            }
+                          ]
+                        }
+                      },
+                      "apValue": {
+                        "description": "Generate AP values for each entry.",
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": { "const": "DerivedFromIC" },
+                              "value": {
+                                "description": "This number is multiplied with the IC of the entry (A = 1 to D = 4).",
+                                "type": "integer",
+                                "minimum": 2
+                              }
+                            },
+                            "required": ["type", "value"],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": { "const": "Fixed" },
+                              "value": {
+                                "type": "object",
+                                "properties": {
+                                  "list": {
+                                    "description": "A mapping of entry ids to their specific AP values.",
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "description": "The entry id.",
+                                          "type": "integer",
+                                          "minimum": 1
+                                        },
+                                        "apValue": {
+                                          "description": "The AP value for the specified entry.",
+                                          "type": "integer",
+                                          "minimum": 1
+                                        }
+                                      },
+                                      "required": ["id", "apValue"],
+                                      "additionalProperties": false
+                                    },
+                                    "minItems": 1
+                                  },
+                                  "default": {
+                                    "description": "The default value of an entry. Used as a fallback if no value is found in \"list\"",
+                                    "type": "integer",
+                                    "minimum": 1
+                                  }
+                                },
+                                "required": ["list", "default"],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": ["type", "value"],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    },
+                    "required": ["category"],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "minItems": 1
+            }
+          },
+          "required": ["tag", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "Explicit" },
+            "list": {
+              "description": "A list of explicit select options. If the id has a specific type, it's entry is the base of this select option, where values defined here override values from the base. Define the \"src\" property if the options are not derived from the rules text of the advantage/disadvantage/special ability but instead are listed in a separate block and/or on a separate page.",
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "description": "An increasing integer or an entry id.",
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "professionOnly": {
+                        "description": "Sometimes, professions use specific text selections that are not contained in described lists. This ensures you can use them for professions only. They are not going to be displayed as options to the user.",
+                        "type": "boolean"
+                      },
+                      "skillApplications": {
+                        "description": "Registers new applications, which get enabled once this entry is activated with its respective select option. It specifies an entry-unique identifier and the skill it belongs to. A translation can be left out if its name equals the name of the origin select option.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "description": "An unique, increasing integer, identifying the application in the entry it is registered for.",
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "skillId": {
+                              "description": "The identifiers of the skills this application is for.",
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 1
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                  },
+                                  "minItems": 2
+                                }
+                              ]
+                            },
+                            "translations": {
+                              "type": "object",
+                              "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                              "patternProperties": {
+                                "^[a-z]{2}-[A-Z]{2}$": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1
+                                    }
+                                  },
+                                  "required": ["name"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "minProperties": 1,
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": ["id", "skillId"],
+                          "additionalProperties": false
+                        },
+                        "minItems": 1
+                      },
+                      "skillUses": {
+                        "description": "Registers uses, which get enabled once this entry is activated with its respective select option. It specifies an entry-unique identifier and the skill it belongs to. A translation can be left out if its name equals the name of the origin select option.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "description": "An unique, increasing integer, identifying the use in the entry it is registered for.",
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "skillId": {
+                              "description": "The identifiers of the skills this application is for.",
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 1
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                  },
+                                  "minItems": 2
+                                }
+                              ]
+                            },
+                            "translations": {
+                              "type": "object",
+                              "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                              "patternProperties": {
+                                "^[a-z]{2}-[A-Z]{2}$": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1
+                                    }
+                                  },
+                                  "required": ["name"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "minProperties": 1,
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": ["id", "skillId"],
+                          "additionalProperties": false
+                        },
+                        "minItems": 1
+                      },
+                      "prerequisites": {
+                        "$ref": "_PrerequisiteGroups.schema.json#/definitions/GeneralCollection"
+                      },
+                      "apValue": {
+                        "description": "Specific AP cost for the select option.",
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "src": { "$ref": "_SourceRefs.schema.json" },
+                      "translations": {
+                        "type": "object",
+                        "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                        "patternProperties": {
+                          "^[a-z]{2}-[A-Z]{2}$": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "description": "The name of the select option.",
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "nameInProfession": {
+                                "description": "The name of the select option when displayed in a generated profession text.",
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "description": {
+                                "description": "The description of the select option. Useful for Bad Habits, Trade Secrets and other entries where a description is available. Markdown is available.",
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "errata": { "$ref": "_Errata.schema.json" }
+                            },
+                            "required": ["name"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "minProperties": 1,
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["id", "translations"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "description": "An increasing integer or an entry id.",
+                        "type": "object",
+                        "properties": {
+                          "type": { "const": "Skill" },
+                          "value": { "type": "integer", "minimum": 1 }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      },
+                      "skillApplications": {
+                        "description": "Registers new applications, which get enabled once this entry is activated with its respective select option. It specifies an entry-unique identifier, the skill it belongs to is derived from the select option automatically. A translation can be left out if its name equals the name of the origin select option.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "description": "An unique, increasing integer, identifying the application in the entry it is registered for.",
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "translations": {
+                              "type": "object",
+                              "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                              "patternProperties": {
+                                "^[a-z]{2}-[A-Z]{2}$": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1
+                                    }
+                                  },
+                                  "required": ["name"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "minProperties": 1,
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": ["id"],
+                          "additionalProperties": false
+                        },
+                        "minItems": 1
+                      },
+                      "skillUses": {
+                        "description": "Registers uses, which get enabled once this entry is activated with its respective select option. It specifies an entry-unique identifier, the skill it belongs to is derived from the select option automatically. A translation can be left out if its name equals the name of the origin select option.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "description": "An unique, increasing integer, identifying the use in the entry it is registered for.",
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "translations": {
+                              "type": "object",
+                              "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                              "patternProperties": {
+                                "^[a-z]{2}-[A-Z]{2}$": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1
+                                    }
+                                  },
+                                  "required": ["name"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "minProperties": 1,
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": ["id"],
+                          "additionalProperties": false
+                        },
+                        "minItems": 1
+                      },
+                      "prerequisites": {
+                        "$ref": "_PrerequisiteGroups.schema.json#/definitions/GeneralCollection"
+                      },
+                      "apValue": {
+                        "description": "Specific AP cost for the select option.",
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "src": { "$ref": "_SourceRefs.schema.json" },
+                      "translations": {
+                        "type": "object",
+                        "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                        "patternProperties": {
+                          "^[a-z]{2}-[A-Z]{2}$": {
+                            "type": "object",
+                            "properties": {
+                              "errata": { "$ref": "_Errata.schema.json" }
+                            },
+                            "required": [],
+                            "additionalProperties": false,
+                            "minProperties": 1
+                          }
+                        },
+                        "minProperties": 1,
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["id"],
+                    "additionalProperties": false,
+                    "minProperties": 2
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "description": "An increasing integer or an entry id.",
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "enum": [
+                              "MeleeCombatTechnique",
+                              "RangedCombatTechnique"
+                            ]
+                          },
+                          "value": { "type": "integer", "minimum": 1 }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      },
+                      "prerequisites": {
+                        "$ref": "_PrerequisiteGroups.schema.json#/definitions/GeneralCollection"
+                      },
+                      "apValue": {
+                        "description": "Specific AP cost for the select option.",
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "src": { "$ref": "_SourceRefs.schema.json" },
+                      "translations": {
+                        "type": "object",
+                        "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                        "patternProperties": {
+                          "^[a-z]{2}-[A-Z]{2}$": {
+                            "type": "object",
+                            "properties": {
+                              "errata": { "$ref": "_Errata.schema.json" }
+                            },
+                            "required": [],
+                            "additionalProperties": false,
+                            "minProperties": 1
+                          }
+                        },
+                        "minProperties": 1,
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["id"],
+                    "additionalProperties": false,
+                    "minProperties": 2
+                  }
+                ]
+              },
+              "minItems": 1
+            }
+          },
+          "required": ["tag", "list"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Options": {
+      "$comment": "Unfinished generalized options handling.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": { "const": "List" },
+              "value": {
+                "type": "object",
+                "properties": {
+                  "list": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": { "const": "Generate" },
+                          "value": { "$ref": "#/definitions/SelectOptionCategories" }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": { "const": "Explicit" },
+                          "value": { "$ref": "#/definitions/SelectOptions" }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "multiple": {
+                    "description": "Sometimes, multiple options from a single list have to or can be chosen. Its possible to define a number of options that have to be selected or a range of numbers of options that can be selected.",
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": { "const": "Fixed" },
+                          "value": {
+                            "description": "The number of options that have to be selected.",
+                            "type": "integer",
+                            "minimum": 2
+                          }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": { "const": "Range" },
+                          "value": {
+                            "type": "object",
+                            "properties": {
+                              "min": {
+                                "description": "The minimum number of options that need to be selected. If left empty it defaults to 1.",
+                                "type": "integer",
+                                "minimum": 2
+                              },
+                              "max": {
+                                "description": "The maximum number of options that need to be selected.",
+                                "type": "integer",
+                                "minimum": 2
+                              }
+                            },
+                            "required": ["max"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "required": ["list"],
+                "additionalProperties": false
+              }
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": { "const": "TextInput" },
+              "value": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "object",
+                    "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                    "patternProperties": {
+                      "^[a-z]{2}-[A-Z]{2}$": {
+                        "description": "The text input label.",
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "minProperties": 1,
+                    "additionalProperties": false
+                  }
+                },
+                "required": ["label"],
+                "additionalProperties": false
+              }
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "Input": {
+      "description": "A string that is used as a placeholder text for an input field.",
+      "type": "string",
+      "minLength": 1
+    },
+    "Rules": {
+      "description": "The rule text. Markdown is available.",
+      "type": "string",
+      "minLength": 1
+    },
+    "Effect": {
+      "description": "The effect description. Markdown is available.",
+      "type": "string",
+      "minLength": 1
+    },
+    "CombatSpecialAbilityType": {
+      "description": "Type of combat special ability. The type id.",
+      "enum": ["Passive", "BaseManeuver", "SpecialManeuver"]
+    },
+    "SkillApplications": {
+      "description": "Registers new applications, which get enabled once this entry is activated. It specifies an entry-unique identifier and the skill it belongs to. A translation can be left out if its name equals the name of the origin entry.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "An unique, increasing integer, identifying the application in the entry it is registered for.",
+            "type": "integer",
+            "minimum": 1
+          },
+          "skillId": {
+            "description": "The identifiers of the skills this application is for.",
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "minItems": 2
+              }
+            ]
+          },
+          "requiredSkillRating": {
+            "description": "If an application applies to multiple skills, it may need to ensure the respective skill is on a certain skill rating.",
+            "type": "integer",
+            "minimum": 1
+          },
+          "translations": {
+            "type": "object",
+            "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+            "patternProperties": {
+              "^[a-z]{2}-[A-Z]{2}$": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": ["name"],
+                "additionalProperties": false
+              }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+          }
+        },
+        "required": ["id", "skillId"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "SkillUses": {
+      "description": "Registers uses, which get enabled once this entry is activated. It specifies an entry-unique identifier and the skill it belongs to. A translation can be left out if its name equals the name of the origin entry.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "An unique, increasing integer, identifying the use in the entry it is registered for.",
+            "type": "integer",
+            "minimum": 1
+          },
+          "skillId": {
+            "description": "The identifiers of the skills this application is for.",
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "minItems": 2
+              }
+            ]
+          },
+          "translations": {
+            "type": "object",
+            "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+            "patternProperties": {
+              "^[a-z]{2}-[A-Z]{2}$": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": ["name"],
+                "additionalProperties": false
+              }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+          }
+        },
+        "required": ["id", "skillId"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "Penalty": {
+      "description": "The penalty the special ability gives when used.",
+      "type": "string",
+      "minLength": 1
+    },
+    "AeCost": {
+      "description": "The AE Cost.",
+      "type": "string",
+      "minLength": 1
+    },
+    "Volume": {
+      "description": "The volume points the enchantment needs.",
+      "type": "string",
+      "minLength": 1
+    },
+    "BindingCost": {
+      "description": "The binding cost for an enchantment.",
+      "type": "string",
+      "minLength": 1
+    },
+    "Property": {
+      "description": "The magic property. See `Properties` to get the id. Use DependingOnProperty if there is no clear property.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "DependingOnProperty" }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "Single" },
+            "value": { "type": "integer", "minimum": 1 }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Aspect": {
+      "description": "The blessed aspect. See `Liturgical Chants` for the aspects array to get the ID.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "AdvancedSpecialAbility": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "RestrictOptions" },
+            "id": { "type": "integer", "minimum": 1 },
+            "option": {
+              "description": "Specify, if only one specific select option or one of a set of select options is allowed for the referenced advanced special ability.",
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": { "const": "Element" },
+                    "value": { "type": "integer", "minimum": 1 }
+                  },
+                  "required": ["type", "value"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": { "const": "Element" },
+                          "value": { "type": "integer", "minimum": 1 }
+                        },
+                        "required": ["type", "value"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "uniqueItems": true,
+                  "minItems": 2
+                }
+              ]
+            }
+          },
+          "required": ["id", "option"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "OneOf" },
+            "options": {
+              "type": "array",
+              "items": { "type": "integer", "minimum": 1 }
+            },
+            "isSelectionRequiredOnPurchase": {
+              "type": "boolean"
+            },
+            "displayOption": { "$ref": "_Prerequisites.schema.json#/definitions/DisplayOption" }
+          },
+          "required": ["type", "options", "isSelectionRequiredOnPurchase"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "DeriveFromExternalOption" },
+            "externalEntry": {
+              "type": "object",
+              "properties": {
+                "type": { "const": "MagicalTradition" },
+                "value": { "type": "integer", "minimum": 1 }
+              },
+              "required": ["type", "value"],
+              "additionalProperties": false
+            },
+            "mappings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fromOption": {
+                    "type": "object",
+                    "properties": {
+                      "type": { "const": "Patron" },
+                      "value": { "type": "integer", "minimum": 1 }
+                    },
+                    "required": ["type", "value"],
+                    "additionalProperties": false
+                  },
+                  "toAdvanced": { "type": "integer", "minimum": 1 }
+                },
+                "required": ["type", "value"],
+                "additionalProperties": false
+              },
+              "minItems": 1
+            },
+            "displayOption": { "$ref": "_Prerequisites.schema.json#/definitions/DisplayOption" }
+          },
+          "required": ["type", "externalEntry", "mappings"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "AdvancedSpecialAbilities": {
+      "description": "The Advanced Special Abilities for the respective Style Special Ability. Sometimes, only a specific select option or a set of select options of an entry is allowed, which can be modelled by the option property. It can also be that you can choose from a set of special abilities, but then you cant specify an option.",
+      "type": "array",
+      "items": [
+        { "$ref": "#/definitions/AdvancedSpecialAbility" },
+        { "$ref": "#/definitions/AdvancedSpecialAbility" },
+        { "$ref": "#/definitions/AdvancedSpecialAbility" }
+      ],
+      "additionalItems": false,
+      "minItems": 3
+    },
+    "AdvancedSpecialAbilitiesAppend": {
+      "description": "An addition to the default advanced special abilities text. Markdown is available.",
+      "type": "string",
+      "minLength": 1
+    },
+    "ApplicableCombatTechniques": {
+      "description": "Applicable combat techniques. Specify a list of combat technique IDs if only specific combat techniques are applicable, but you can also specify a specific combat technique group. Leave empty if entry has no specific associated combat techniques (\"–\"). 1: All; 2: All melee CTs; 3: All ranged CTs; 4: All melee CTs with parry; 5: All melee CTs used with one-handed weapons.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": { "enum": ["None", "DependingOnCombatStyle"] }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "All" },
+            "value": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": { "enum": ["Improvised", "PointedBlade", "Mount"] }
+                    },
+                    "required": ["type"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": { "const": "Race" },
+                      "value": { "type": "integer", "minimum": 1 }
+                    },
+                    "required": ["type", "value"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": { "const": "ExcludeTechniques" },
+                      "value": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "enum": [
+                                "MeleeCombatTechnique",
+                                "RangedCombatTechnique"
+                              ]
+                            },
+                            "value": { "type": "integer", "minimum": 1 }
+                          },
+                          "required": ["type", "value"],
+                          "additionalProperties": false
+                        },
+                        "minItems": 1
+                      }
+                    },
+                    "required": ["type", "value"],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "minItems": 1
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "AllMelee" },
+            "value": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": { "enum": ["Improvised", "PointedBlade", "Mount", "HasParry", "OneHanded", "ParryingWeapon"] }
+                    },
+                    "required": ["type"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": { "const": "Race" },
+                      "value": { "type": "integer", "minimum": 1 }
+                    },
+                    "required": ["type", "value"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": { "const": "ExcludeTechniques" },
+                      "value": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 1 },
+                        "minItems": 1
+                      }
+                    },
+                    "required": ["type", "value"],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "minItems": 1
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "AllRanged" },
+            "value": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": { "enum": ["Improvised", "PointedBlade", "Mount"] }
+                    },
+                    "required": ["type"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": { "const": "Race" },
+                      "value": { "type": "integer", "minimum": 1 }
+                    },
+                    "required": ["type", "value"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": { "const": "ExcludeTechniques" },
+                      "value": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 1 },
+                        "minItems": 1
+                      }
+                    },
+                    "required": ["type", "value"],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "minItems": 1
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "Specific" },
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "MeleeCombatTechnique",
+                          "RangedCombatTechnique"
+                        ]
+                      },
+                      "value": { "type": "integer", "minimum": 1 }
+                    },
+                    "required": ["type", "value"],
+                    "additionalProperties": false
+                  },
+                  "restrictions": {
+                    "type": "array",
+                    "items": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "enum": ["Improvised", "PointedBlade", "Mount"] }
+                          },
+                          "required": ["type"],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "enum": ["Race", "Level"] },
+                            "value": { "type": "integer", "minimum": 1 }
+                          },
+                          "required": ["type", "value"],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "const": "Weapons" },
+                            "value": {
+                              "type": "array",
+                              "items": { "type": "integer", "minimum": 1 },
+                              "minItems": 1
+                            }
+                          },
+                          "required": ["type", "value"],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": ["id"],
+                "additionalProperties": false
+              },
+              "minItems": 1
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ApValue": {
+      "description": "The AP value you have to pay for.\n\n- If the AP costs depend on the selection, leave empty.\n- If the AP costs depend on the selected skill's improvement cost, insert an array. The first entry represents A, the second B and so on. `Always` start from A. If there is no AP value given for IC A, type 0. If you use an array, contact the developer, this has to be implemented manually.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "Flat" },
+            "value": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "PerLevel" },
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "minItems": 1
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "description": "Used if AP value is defined by the selected option(s).",
+          "type": "object",
+          "properties": {
+            "type": { "const": "Option" }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ApValueReplacement": {
+      "description": "The AP value. Only use this if the text provides different information than `X adventure points`, e.g. for Special Ability Property Knowledge it is \"10 adventure points for the first *Property Knowledge*, 20 adventure points for the second, 40 adventure points for the third\". Markdown is available.",
+      "type": "string",
+      "minLength": 1
+    },
+    "ApValueAppend": {
+      "description": "An addition to the default AP value schema. Only use this if the text provides information appended to `X adventure points` and if `apValue` is not used. Markdown is available.",
+      "type": "string",
+      "minLength": 1
+    },
+    "PrerequisitesReplacement": {
+      "description": "Use if text cannot be generated by the app. Markdown is available.",
+      "type": "string",
+      "minLength": 1
+    },
+    "PrerequisitesStart": {
+      "description": "Prepends the provided string to the main prerequisites string. No effect if `prerequisites` field is used in l10n file. Markdown is available.",
+      "type": "string",
+      "minLength": 1
+    },
+    "PrerequisitesEnd": {
+      "description": "Appends the provided string to the main prerequisites string. No effect if `prerequisites` field is used in l10n table. Markdown is available.",
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

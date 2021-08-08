@@ -1,0 +1,493 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/_ActivatableSkill.schema.json",
+  "title": "Activatable Skill",
+  "definitions": {
+    "QualityLevels": {
+      "description": "Effect descriptions for a reached QL. You can set an effect for each QL or for each 2 QL. Markdown is available.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": [
+            { "description": "Effect at QL 1. Markdown is available.", "type": "string", "minLength": 1 },
+            { "description": "Effect at QL 2. Markdown is available.", "type": "string", "minLength": 1 },
+            { "description": "Effect at QL 3. Markdown is available.", "type": "string", "minLength": 1 },
+            { "description": "Effect at QL 4. Markdown is available.", "type": "string", "minLength": 1 },
+            { "description": "Effect at QL 5. Markdown is available.", "type": "string", "minLength": 1 },
+            { "description": "Effect at QL 6. Markdown is available.", "type": "string", "minLength": 1 }
+          ],
+          "minItems": 6,
+          "maxItems": 6
+        },
+        {
+          "type": "array",
+          "items": [
+            { "description": "Effect at QL 1–2. Markdown is available.", "type": "string", "minLength": 1 },
+            { "description": "Effect at QL 3–4. Markdown is available.", "type": "string", "minLength": 1 },
+            { "description": "Effect at QL 5–6. Markdown is available.", "type": "string", "minLength": 1 }
+          ],
+          "minItems": 3,
+          "maxItems": 3
+        }
+      ]
+    },
+    "MainParameter": {
+      "type": "object",
+      "properties": {
+        "full": {
+          "description": "The full parameter text.",
+          "type": "string",
+          "minLength": 1
+        },
+        "abbr": {
+          "description": "The abbreviated parameter text for the character sheet.",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": ["full", "abbr"],
+      "additionalProperties": false
+    },
+    "MainParameters": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "OneTime" },
+            "value": {
+              "type": "object",
+              "properties": {
+                "castingTime": { "$ref": "#/definitions/CastingTime" },
+                "cost": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": { "const": "Flat" },
+                            "value": {
+                              "type": "object",
+                              "properties": {
+                                "isMinimum": {
+                                  "description": "Whether more AE/KP than defined by \"flat\" can be spent for the skill. The \"flat\" value is the required minimum, though.",
+                                  "type": "boolean",
+                                  "default": false
+                                },
+                                "flat": {
+                                  "description": "The skill improvement increment level.",
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 6
+                                }
+                              },
+                              "required": ["flat"],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": ["type", "value"],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "array",
+                          "items": [
+                            { "description": "Effect at QL 1–2. Markdown is available.", "type": "string", "minLength": 1 },
+                            { "description": "Effect at QL 3–4. Markdown is available.", "type": "string", "minLength": 1 },
+                            { "description": "Effect at QL 5–6. Markdown is available.", "type": "string", "minLength": 1 }
+                          ],
+                          "minItems": 3,
+                          "maxItems": 3
+                        }
+                      ]
+                    },
+                    "modifiable": {
+                      "description": "Is the cost modifiable?",
+                      "type": "boolean",
+                      "default": true
+                    }
+                  },
+                  "required": ["value", "modifiable"],
+                  "additionalProperties": false
+                },
+                "range": { "$ref": "#/definitions/Range" },
+                "duration": {
+                  "type": "object",
+                  "properties": {
+                    "interval": {
+                      "description": "The interval at which beginnig half of the flat cost have to be paid each time.",
+                      "type": "object",
+                      "properties": {
+                        "number": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "unit": {
+                          "enum": [
+                            "Seconds",
+                            "Minutes",
+                            "Hours",
+                            "CombatRounds"
+                          ]
+                        }
+                      },
+                      "required": ["number", "unit"],
+                      "additionalProperties": false
+                    },
+                    "maximum": {
+                      "description": "Is the cost modifiable?",
+                      "type": "boolean",
+                      "default": true
+                    }
+                  },
+                  "required": ["value", "modifiable"],
+                  "additionalProperties": false
+                },
+                "translations": {
+                  "type": "object",
+                  "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                  "patternProperties": {
+                    "^[a-z]{2}-[A-Z]{2}$": {
+                      "type": "object",
+                      "properties": {
+                        "restriction": {
+                          "description": "Further restrict the target category.",
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": ["restriction"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "minProperties": 1,
+                  "additionalProperties": false
+                }
+              },
+              "required": ["cost", "duration"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "Sustained" },
+            "value": {
+              "type": "object",
+              "properties": {
+                "castingTime": { "$ref": "#/definitions/CastingTime" },
+                "cost": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "object",
+                      "properties": {
+                        "isMinimum": {
+                          "description": "Whether more AE/KP than defined by \"flat\" can be spent for the skill. The \"flat\" value is the required minimum, though.",
+                          "type": "boolean",
+                          "default": false
+                        },
+                        "flat": {
+                          "description": "The skill improvement increment level.",
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 6
+                        }
+                      },
+                      "required": ["flat"],
+                      "additionalProperties": false
+                    },
+                    "modifiable": {
+                      "description": "Is the cost modifiable?",
+                      "type": "boolean",
+                      "default": true
+                    }
+                  },
+                  "required": ["value", "modifiable"],
+                  "additionalProperties": false
+                },
+                "range": { "$ref": "#/definitions/Range" },
+                "duration": {
+                  "type": "object",
+                  "properties": {
+                    "interval": {
+                      "description": "The interval at which beginnig half of the flat cost have to be paid each time.",
+                      "type": "object",
+                      "properties": {
+                        "number": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "unit": {
+                          "enum": [
+                            "Seconds",
+                            "Minutes",
+                            "Hours",
+                            "CombatRounds"
+                          ]
+                        }
+                      },
+                      "required": ["number", "unit"],
+                      "additionalProperties": false
+                    },
+                    "maximum": {
+                      "description": "Is the cost modifiable?",
+                      "type": "boolean",
+                      "default": true
+                    }
+                  },
+                  "required": ["value", "modifiable"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["cost", "duration"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "CastingTime": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "oneOf": [
+            {
+              "description": "The skill improvement increment level.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            },
+            {
+              "description": "In Aventurian Intimacy, you may only use an activatable skill during lovemaking if it has a casting time used during lovemaking.",
+              "type": "object",
+              "properties": {
+                "beforeLovemaking": {
+                  "description": "The skill improvement increment level.",
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                },
+                "duringLovemaking": {
+                  "description": "The casting time during lovemaking.",
+                  "type": "object",
+                  "properties": {
+                    "number": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "unit": {
+                      "enum": [
+                        "SeductionActions",
+                        "Round"
+                      ]
+                    }
+                  },
+                  "required": ["number", "unit"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["beforeLovemaking", "duringLovemaking"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "modifiable": {
+          "description": "Is the casting time modifiable?",
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": ["value", "modifiable"],
+      "additionalProperties": false
+    },
+    "Range": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "oneOf": [
+            {
+              "description": "The skill improvement increment level.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            },
+            {
+              "description": "Global = \"dereumfassend\" (de-DE)",
+              "enum": ["Sight", "Self", "Global"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "oneOf": [
+                    {
+                      "description": "The skill improvement increment level.",
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 6
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "description": "Global = \"dereumfassend\" (de-DE)",
+                          "enum": ["Sight", "Self", "Global"]
+                        }
+                      },
+                      "required": ["type"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "enum": ["Flat"]
+                        },
+                        "value": {
+                          "description": "The interval at which beginnig half of the flat cost have to be paid each time.",
+                          "type": "object",
+                          "properties": {
+                            "number": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "unit": {
+                              "description": "\"Second\" is used for minutes and hours as well; the conversion will be made automatically.",
+                              "enum": [
+                                "Steps",
+                                "Miles"
+                              ]
+                            }
+                          },
+                          "required": ["number", "unit"],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": ["type", "value"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "enum": ["MultiplyQL"]
+                        },
+                        "value": {
+                          "description": "The interval at which beginnig half of the flat cost have to be paid each time.",
+                          "type": "object",
+                          "properties": {
+                            "multiplier": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "unit": {
+                              "description": "\"Second\" is used for minutes and hours as well; the conversion will be made automatically.",
+                              "enum": [
+                                "Steps",
+                                "Miles"
+                              ]
+                            }
+                          },
+                          "required": ["multiplier", "unit"],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": ["type", "value"],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "translations": {
+                  "type": "object",
+                  "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                  "patternProperties": {
+                    "^[a-z]{2}-[A-Z]{2}$": {
+                      "type": "object",
+                      "properties": {
+                        "note": {
+                          "description": "A note, appended to the base range in parenthesis.",
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": ["note"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "minProperties": 1,
+                  "additionalProperties": false
+                }
+              },
+              "required": ["value"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "modifiable": {
+          "description": "Is the range modifiable?",
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": ["value", "modifiable"],
+      "additionalProperties": false
+    },
+    "TargetCategory": {
+      "oneOf": [
+        {
+          "enum": ["All", "Self"]
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "oneOf": [
+                  {
+                    "enum": ["Zone", "LiturgicalChantsAndCeremonies"]
+                  },
+                  {
+                    "description": "The target category identifier.",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 24
+                  }
+                ]
+              },
+              "translations": {
+                "type": "object",
+                "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                "patternProperties": {
+                  "^[a-z]{2}-[A-Z]{2}$": {
+                    "type": "object",
+                    "properties": {
+                      "restriction": {
+                        "description": "Further restrict the target category.",
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": ["restriction"],
+                    "additionalProperties": false
+                  }
+                },
+                "minProperties": 1,
+                "additionalProperties": false
+              }
+            },
+            "required": ["id"],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      ]
+    }
+  }
+}

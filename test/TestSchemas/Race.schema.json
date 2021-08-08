@@ -1,0 +1,445 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Race.schema.json",
+  "title": "Race",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "apValue": {
+      "description": "The AP value you have to pay.",
+      "type": "integer"
+    },
+    "lp": {
+      "description": "The LP base stat.",
+      "type": "integer"
+    },
+    "spi": {
+      "description": "The SPI base stat.",
+      "type": "integer"
+    },
+    "tou": {
+      "description": "The TOU base stat.",
+      "type": "integer"
+    },
+    "mov": {
+      "description": "The MOV base stat.",
+      "type": "integer"
+    },
+    "attributeAdjustments": {
+      "description": "An array of attribute maximum modifiers. The value will be added to the current maximum of the ID-specified attribute (negative values will lower the maximum).",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The attribute's ID.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "value": {
+            "description": "The value by which the attribute's maximum is modified (negative values will lower the maximum).",
+            "type": "integer"
+          }
+        },
+        "required": ["id", "value"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "attributeAdjustmentsSelectionValue": {
+      "description": "Used if the user has to choose between different modifiers. This property will be added to the current maximum (negative values will lower the maximum).",
+      "type": "integer"
+    },
+    "attributeAdjustmentsSelectionList": {
+      "description": "Used if the user has to choose between different modifiers. This property contains possible numeric attribute IDs.",
+      "type": "array",
+      "items": {
+        "description": "The attribute's ID.",
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 8
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "automaticAdvantages": {
+      "description": "A list of automatically applied advantages. This does only work for advantages with no further configuration such as level or special selection. If this is needed, please contact me.",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "stronglyRecommendedAdvantages": {
+      "description": "A list of strongly recommended advantages.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "stronglyRecommendedDisadvantages": {
+      "description": "A list of strongly recommended disadvantages.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "commonAdvantages": {
+      "description": "A list of common advantages. If common advantages are defined by the race variants, leave this field empty.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "commonDisadvantages": {
+      "description": "A list of common disadvantages. If common disadvantages are defined by the race variants, leave this field empty.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "uncommonAdvantages": {
+      "description": "A list of uncommon advantages. If uncommon advantages are defined by the race variants, leave this field empty.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "uncommonDisadvantages": {
+      "description": "A list of uncommon disadvantages. If uncommon disadvantages are defined by the race variants, leave this field empty.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "weightBase": {
+      "description": "The base value used for random weight. The size subtrahent; in case of \"Size - 110 + 2D6\" it is \"110\".",
+      "type": "integer",
+      "minimum": 1
+    },
+    "weightRandom": {
+      "description": "The dice used for random weight. If the amount is negative, the sum of the result is going to be subtracted from the end result.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/Die" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "startingAge": {
+      "description": "Defines the starting ages for the race. It depends on the selected experience level.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "experienceLevelId": {
+            "description": "The selected experience level.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 7
+          },
+          "base": {
+            "description": "The base value for the selected experience level.",
+            "type": "integer",
+            "minimum": 1
+          },
+          "random": {
+            "description": "The random value for the selected experience level. It is going to be added to the base value.",
+            "$ref": "#/definitions/Die"
+          }
+        }
+      },
+      "minItems": 7,
+      "maxItems": 7
+    },
+    "typeSpecific": {
+      "description": "This object contains type-specific information about the race. Either it contains variants or it contains some additional aspects of a race. The race's type is ",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "WithVariants"
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "variants": {
+                  "description": "A list of available race variants.",
+                  "type": "array",
+                  "items": {
+                    "title": "Race Variant",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "description": "An unique, increasing integer.",
+                        "type": "integer"
+                      },
+                      "commonCultures": {
+                        "description": "The list of common cultures.",
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      },
+                      "commonAdvantages": {
+                        "description": "A list of common advantages. If common advantages are defined by the race, leave this field empty.",
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      },
+                      "commonDisadvantages": {
+                        "description": "A list of common disadvantages. If common disadvantages are defined by the race, leave this field empty.",
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      },
+                      "uncommonAdvantages": {
+                        "description": "A list of uncommon advantages. If uncommon advantages are defined by the race, leave this field empty.",
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      },
+                      "uncommonDisadvantages": {
+                        "description": "A list of uncommon disadvantages. If uncommon disadvantages are defined by the race, leave this field empty.",
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/SuggestedUnsuitable" },
+                        "minItems": 1,
+                        "uniqueItems": true
+                      },
+                      "hairColors": {
+                        "description": "An array containing 20 (numeric) hair color SIDs. The array also represents the 20-sided die for a random hair color. You can find all the available hair colors in the l10n JSON files. They are represented as an array; to get the ID you have to get the (1-based) index of the hair color in the array. ",
+                        "type": "array",
+                        "items": { "type": "integer" },
+                        "minItems": 20,
+                        "maxItems": 20
+                      },
+                      "eyeColors": {
+                        "description": "An array containing 20 (numeric) eye color SIDs. The array also represents the 20-sided die for a random eye color. You can find all the available eye colors in the l10n JSON files. They are represented as an array; to get the ID you have to get the (1-based) index of the eye color in the array. ",
+                        "type": "array",
+                        "items": { "type": "integer" },
+                        "minItems": 20,
+                        "maxItems": 20
+                      },
+                      "sizeBase": {
+                        "description": "The base value used for random size. ",
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "sizeRandom": {
+                        "description": "The dice used for random size.",
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/Die"},
+                        "minItems": 1
+                      },
+                      "translations": {
+                        "type": "object",
+                        "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                        "patternProperties": {
+                          "^[a-z]{2}-[A-Z]{2}$": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "description": "The name.",
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "commonAdvantages": {
+                                "description": "The respective common advantages text from the source book. If common advantages are defined by the race, leave this field empty.",
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "commonDisadvantages": {
+                                "description": "The respective common disadvantages text from the source book. If common disadvantages are defined by the race, leave this field empty.",
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "uncommonAdvantages": {
+                                "description": "The respective uncommon advantages text from the source book. If uncommon advantages are defined by the race, leave this field empty.",
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "uncommonDisadvantages": {
+                                "description": "The respective uncommon disadvantages text from the source book. If uncommon disadvantages are defined by the race, leave this field empty.",
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "required": ["name"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "minProperties": 1,
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["id", "commonCultures", "hairColors", "eyeColors", "sizeBase", "sizeRandom", "translations"],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": ["variants"]
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "WithoutVariants"
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "commonCultures": {
+                  "description": "The list of common cultures.",
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "hairColors": {
+                  "description": "An array containing 20 (numeric) hair color SIDs. The array also represents the 20-sided die for a random hair color. You can find all the available hair colors in the l10n JSON files. They are represented as an array; to get the ID you have to get the (1-based) index of the hair color in the array. If hair colors are defined by the race variants, leave this field empty.",
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minItems": 20,
+                  "maxItems": 20
+                },
+                "eyeColors": {
+                  "description": "An array containing 20 (numeric) eye color SIDs. The array also represents the 20-sided die for a random eye color. You can find all the available eye colors in the l10n JSON files. They are represented as an array; to get the ID you have to get the (1-based) index of the eye color in the array. If eye colors are defined by the race variants, leave this field empty.",
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minItems": 20,
+                  "maxItems": 20
+                },
+                "sizeBase": {
+                  "description": "The base value used for random size.",
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "sizeRandom": {
+                  "description": "The dice used for random size.",
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/Die" },
+                  "minItems": 1
+                }
+              },
+              "required": ["commonCultures", "hairColors", "eyeColors", "sizeBase", "sizeRandom"]
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name.",
+              "type": "string",
+              "minLength": 1
+            },
+            "attributeAdjustments": {
+              "description": "The respective attribute adjustments text from the source book.",
+              "type": "string",
+              "minLength": 1
+            },
+            "automaticAdvantages": {
+              "description": "The respective automatic advantages text from the source book.",
+              "type": "string",
+              "minLength": 1
+            },
+            "stronglyRecommendedAdvantages": {
+              "description": "The respective strongly recommended advantages text from the source book.",
+              "type": "string",
+              "minLength": 1
+            },
+            "stronglyRecommendedDisadvantages": {
+              "description": "The respective strongly recommended disadvantages text from the source book.",
+              "type": "string",
+              "minLength": 1
+            },
+            "commonAdvantages": {
+              "description": "The respective common advantages text from the source book. If common advantages are defined by the race variants, leave this field empty.",
+              "type": "string",
+              "minLength": 1
+            },
+            "commonDisadvantages": {
+              "description": "The respective common disadvantages text from the source book. If common disadvantages are defined by the race variants, leave this field empty.",
+              "type": "string",
+              "minLength": 1
+            },
+            "uncommonAdvantages": {
+              "description": "The respective uncommon advantages text from the source book. If uncommon advantages are defined by the race variants, leave this field empty.",
+              "type": "string",
+              "minLength": 1
+            },
+            "uncommonDisadvantages": {
+              "description": "The respective uncommon disadvantages text from the source book. If uncommon disadvantages are defined by the race variants, leave this field empty.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "attributeAdjustments"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "apValue", "lp", "spi", "tou", "mov", "attributeAdjustmentsSelectionValue", "attributeAdjustmentsSelectionList", "weightBase", "weightRandom", "startingAge", "typeSpecific", "src", "translations"],
+  "additionalProperties": false,
+  "definitions": {
+    "Die": {
+      "title": "Die",
+      "type": "object",
+      "properties": {
+        "amount": {
+          "description": "Amount of dice of the same type. Example: 2 in 2D6",
+          "type": "integer"
+        },
+        "sides": {
+          "description": "Amount of sides on every dice. Example: 6 in 2D6",
+          "enum": [ 3, 6, 20 ]
+        }
+      },
+      "required": ["amount", "sides"],
+      "additionalProperties": false
+    },
+    "SuggestedUnsuitable": {
+      "title": "Suggested/Unsuitable Advantage/Disadvantage",
+      "description": "Select one of a list of possible terrain knowledges. The IDs equal the selection IDs used by the special ability.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["id"],
+      "additionalProperties": true
+    }
+  }
+}

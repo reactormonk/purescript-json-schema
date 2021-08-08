@@ -1,0 +1,444 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/_PrerequisiteGroups.schema.json",
+  "title": "Prerequisite Groups",
+  "definitions": {
+    "General": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/Sex" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Race" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Culture" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Pact" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/SocialStatus" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/State" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Rule" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/PrimaryAttribute" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Activatable" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/ActivatableMultiEntry" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/ActivatableMultiSelect" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/MagicalTradition" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/BlessedTradition" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Increasable" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/IncreasableMultiEntry" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/MinimumSkillRating" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Enhancement" }
+      ]
+    },
+    "GeneralCollection": {
+      "title": "General Prerequisites",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "Plain" },
+            "value": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/definitions/General" }
+            }
+          },
+          "required": ["tag", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "ByLevel" },
+            "value": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "level": {
+                    "type": "number",
+                    "minimum": 1
+                  },
+                  "prerequisites": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/definitions/General" }
+                  }
+                },
+                "required": ["level", "prerequisites"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["tag", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Profession": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/Sex" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Race" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Culture" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Activatable" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Increasable" }
+      ]
+    },
+    "ProfessionCollection": {
+      "title": "Profession Prerequisites",
+      "type": "object",
+      "properties": {
+        "tag": { "const": "Plain" },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/Profession" }
+        }
+      },
+      "required": ["tag", "value"],
+      "additionalProperties": false
+    },
+    "Advantage": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/CommonSuggestedByRCP" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/NoOtherAncestorBloodAdvantage" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Sex" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Race" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Culture" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Pact" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/SocialStatus" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/State" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Rule" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/PrimaryAttribute" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Activatable" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/ActivatableMultiEntry" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/ActivatableMultiSelect" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/MagicalTradition" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/BlessedTradition" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Increasable" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/IncreasableMultiEntry" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/MinimumSkillRating" }
+      ]
+    },
+    "AdvantageCollection": {
+      "title": "Advantage Prerequisites",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "Plain" },
+            "value": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/definitions/Advantage" }
+            }
+          },
+          "required": ["tag", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "ByLevel" },
+            "value": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "level": {
+                    "type": "number",
+                    "minimum": 1
+                  },
+                  "prerequisites": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/definitions/Advantage" }
+                  }
+                },
+                "required": ["level", "prerequisites"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["tag", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Disadvantage": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/CommonSuggestedByRCP" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Sex" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Race" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Culture" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Pact" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/SocialStatus" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/State" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Rule" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/PrimaryAttribute" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Activatable" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/ActivatableMultiEntry" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/ActivatableMultiSelect" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/MagicalTradition" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/BlessedTradition" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Increasable" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/IncreasableMultiEntry" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/MinimumSkillRating" }
+      ]
+    },
+    "DisadvantageCollection": {
+      "title": "Disadvantage Prerequisites",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "Plain" },
+            "value": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/definitions/Disadvantage" }
+            }
+          },
+          "required": ["tag", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "ByLevel" },
+            "value": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "level": {
+                    "type": "number",
+                    "minimum": 1
+                  },
+                  "prerequisites": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/definitions/Disadvantage" }
+                  }
+                },
+                "required": ["level", "prerequisites"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["tag", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ArcaneTradition": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/Sex" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Culture" }
+      ]
+    },
+    "ArcaneTraditionCollection": {
+      "title": "Arcane Tradition Prerequisites",
+      "type": "object",
+      "properties": {
+        "tag": { "const": "Plain" },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/ArcaneTradition" }
+        }
+      },
+      "required": ["tag", "value"],
+      "additionalProperties": false
+    },
+    "PersonalityTrait": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/Culture" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Special" }
+      ]
+    },
+    "PersonalityTraitCollection": {
+      "title": "Personality Trait Prerequisites",
+      "type": "object",
+      "properties": {
+        "tag": { "const": "Plain" },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/PersonalityTrait" }
+        }
+      },
+      "required": ["tag", "value"],
+      "additionalProperties": false
+    },
+    "Spellwork": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/Rule" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Increasable" }
+      ]
+    },
+    "SpellworkCollection": {
+      "title": "Spellwork Prerequisites",
+      "type": "object",
+      "properties": {
+        "tag": { "const": "Plain" },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/Spellwork" }
+        }
+      },
+      "required": ["tag", "value"],
+      "additionalProperties": false
+    },
+    "LiturgicalChant": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/Rule" }
+      ]
+    },
+    "LiturgicalChantCollection": {
+      "title": "Liturgical Chant Prerequisites",
+      "type": "object",
+      "properties": {
+        "tag": { "const": "Plain" },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/LiturgicalChant" }
+        }
+      },
+      "required": ["tag", "value"],
+      "additionalProperties": false
+    },
+    "Influence": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/Influence" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Special" }
+      ]
+    },
+    "InfluenceCollection": {
+      "title": "Influence Prerequisites",
+      "type": "object",
+      "properties": {
+        "tag": { "const": "Plain" },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/Influence" }
+        }
+      },
+      "required": ["tag", "value"],
+      "additionalProperties": false
+    },
+    "Language": {
+      "title": "Language Prerequisite",
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/Race" },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Activatable" }
+      ]
+    },
+    "LanguageList": {
+      "title": "Language Prerequisites",
+      "oneOf": [
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/Language" }
+        },
+        { "$ref": "_Prerequisites.schema.json#/definitions/Ineligible" }
+      ]
+    },
+    "LanguageByLevel": {
+      "title": "Language Prerequisites",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "prerequisites": { "$ref": "#/definitions/LanguageList" }
+        },
+        "required": ["level", "prerequisites"],
+        "additionalProperties": false
+      }
+    },
+    "LanguageCollection": {
+      "title": "Language Prerequisites",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "Plain" },
+            "value": { "$ref": "#/definitions/LanguageList" }
+          },
+          "required": ["tag", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "ByLevel" },
+            "value": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "level": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 3
+                  },
+                  "prerequisites": { "$ref": "#/definitions/LanguageList" }
+                },
+                "required": ["level", "prerequisites"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["tag", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "AnimistPower": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/AnimistPower" }
+      ]
+    },
+    "AnimistPowerCollection": {
+      "title": "Animist Power Prerequisites",
+      "type": "object",
+      "properties": {
+        "tag": { "const": "Plain" },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/AnimistPower" }
+        }
+      },
+      "required": ["tag", "value"],
+      "additionalProperties": false
+    },
+    "Cantrip": {
+      "oneOf": [
+        { "$ref": "_Prerequisites.schema.json#/definitions/Activatable" }
+      ]
+    },
+    "CantripCollection": {
+      "title": "Animist Power Prerequisites",
+      "type": "object",
+      "properties": {
+        "tag": { "const": "Plain" },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/Cantrip" }
+        }
+      },
+      "required": ["tag", "value"],
+      "additionalProperties": false
+    }
+  }
+}

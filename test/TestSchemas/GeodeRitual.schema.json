@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/GeodeRitual.schema.json",
+  "title": "Geode Ritual",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "check": { "$ref": "_SkillCheck.schema.json" },
+    "checkMod": {
+      "description": "If the check will be modified by Spirit (Seelenkraft) or Toughness (Zähigkeit), insert `SPI` or `TOU` respectively. If the higher is the characteristic to choose, insert an array with both instead.",
+      "enum": ["SPI", "SPI/2", "TOU", "SPI/TOU"]
+    },
+    "property": {
+      "description": "The property ID.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "prerequisites": {
+      "description": "A list of Activatable prerequisites that have to be met.",
+      "type": "object",
+      "properties": {
+        "type": { "const": "Plain" },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "const": "Activatable" },
+              "value": { "$ref": "_Prerequisites.schema.json#/definitions/Activatable"},
+              "displayOption": { "$ref": "_Prerequisites.schema.json#/definitions/DisplayOption"}
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["type", "value"],
+      "additionalProperties": false
+    },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the geode ritual.",
+              "type": "string",
+              "minLength": 1
+            },
+            "effect": {
+              "description": "The effect description. Markdown is available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "castingTime": {
+              "description": "The ritual time. Markdown is available.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "cost": {
+              "description": "The AE cost.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "range": {
+              "description": "The range.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "duration": {
+              "description": "The duration.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "target": {
+              "description": "The target category.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "effect", "castingTime", "cost", "range", "duration", "target"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "check", "property", "src", "translations"],
+  "additionalProperties": false
+}

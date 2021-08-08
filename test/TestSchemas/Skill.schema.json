@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Skill.schema.json",
+  "title": "Skill",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "applications": {
+      "description": "The applications of the skill.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "Derived" },
+            "value": {
+              "description": "A list of category ids. All available entries from the specified category/ies will be included as separate applications.",
+              "enum": [
+                "Regions",
+                "Diseases"
+              ]
+            }
+          },
+          "required": ["tag", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "Explicit" },
+            "list": {
+              "description": "A list of explicit applications.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "translations": {
+                    "type": "object",
+                    "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+                    "patternProperties": {
+                      "^[a-z]{2}-[A-Z]{2}$": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": ["name"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "minProperties": 1,
+                    "additionalProperties": false
+                  }
+                },
+                "required": ["id", "translations"],
+                "additionalProperties": false
+              },
+              "minItems": 1
+            }
+          },
+          "required": ["tag", "list"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "check": { "$ref": "_SkillCheck.schema.json" },
+    "ic": {
+      "description": "Improvement cost.",
+      "enum": ["A", "B", "C", "D"]
+    },
+    "enc": {
+      "description": "If the skill check is modified by encumbrance tier or not or just under certain circumstances.",
+      "enum": ["true", "false", "maybe"]
+    },
+    "gr": {
+      "description": "The group id.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the skill.",
+              "type": "string",
+              "minLength": 1
+            },
+            "applicationsInput": {
+              "description": "If there are options available that can not be put into a selection list (like different cults), provide the placeholder text for the input element here. Otherwise leave empty.",
+              "type": "string",
+              "minLength": 1
+            },
+            "encDescription": {
+              "description": "The text listing the certain circumstances in which the encumbrance may count. This text should only be used if `enc` is set to `\"maybe\"`.",
+              "type": "string",
+              "minLength": 1
+            },
+            "tools": {
+              "description": "Necessary equipment to employ the skill. Markdown is available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "quality": {
+              "description": "Examples of effects QL provides. Markdown is available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "failed": {
+              "description": "Examples of effects for failure. Markdown is available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "critical": {
+              "description": "Examples of effects for critical success. Markdown is available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "botch": {
+              "description": "Examples of effects for botch. Markdown is available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "quality", "failed", "critical", "botch"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "check", "ic", "enc", "gr", "src", "translations"],
+  "additionalProperties": false
+}

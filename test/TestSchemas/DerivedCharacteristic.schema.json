@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/DerivedCharacteristic.schema.json",
+  "title": "Derived Characteristic",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the characteristic.",
+              "type": "string",
+              "minLength": 1
+            },
+            "nameAbbr": {
+              "description": "The abbreviation of the characteristic's name.",
+              "type": "string",
+              "minLength": 1
+            },
+            "calc": {
+              "description": "The calculation string.",
+              "type": "string",
+              "minLength": 1
+            },
+            "calcHalfPrimary": {
+              "description": "The calculation string if only half of the primary attribute is used.",
+              "type": "string",
+              "minLength": 1
+            },
+            "calcNoPrimary": {
+              "description": "The calculation string if no primary attribute is used.",
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["name", "nameAbbr", "calc"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "translations"],
+  "additionalProperties": false
+}

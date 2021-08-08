@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Ceremony.schema.json",
+  "title": "Ceremony",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "check": { "$ref": "_SkillCheck.schema.json" },
+    "checkMod": {
+      "description": "If the check will be modified by Spirit (Seelenkraft) or Toughness (Zähigkeit), insert `SPI` (SK) or `TOU` (ZK) respectively. Other options are 'SummoningDifficulty' and 'CreationDifficulty'. Delete if not needed.",
+      "oneOf": [
+        { "enum": ["SPI", "TOU", "SummoningDifficulty", "CreationDifficulty"] },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "enum": ["SPI", "TOU", "SummoningDifficulty", "CreationDifficulty"] },
+            "of": {
+              "description": "The target of which the value is taken.",
+              "enum": ["Creature"]
+            }
+          },
+          "required": ["type", "of"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ic": {
+      "description": "Improvement cost.",
+      "enum": ["A", "B", "C", "D"]
+    },
+    "traditions": {
+      "description": "The tradition(s) the chant is available for. The integers represent the tradition ids.",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "uniqueItems": true
+    },
+    "aspects": {
+      "description": "The aspect(s) of the tradition(s) the chant is part of. The integers represent the aspect IDs.",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "castingTimeNoMod":  {
+      "description": "Is the casting time not modifiable?",
+      "type": "boolean"
+    },
+    "costNoMod": {
+      "description": "Is the KP cost not modifiable?",
+      "type": "boolean"
+    },
+    "rangeNoMod":  {
+      "description": "Is the range not modifiable?",
+      "type": "boolean"
+    },
+    "durationNoMod": {
+      "description": "Is the duration not modifiable?",
+      "type": "boolean"
+    },
+    "enhancements": { "$ref": "_Enhancements.schema.json" },
+    "prerequisites": {
+      "description": "A list of prerequisites that have to be met.",
+      "$ref": "_PrerequisiteGroups.schema.json#/definitions/LiturgicalChantCollection"
+    },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the chant.",
+              "type": "string",
+              "minLength": 1
+            },
+            "nameShort": {
+              "description": "A shorter variant of the full name. Used on character sheet if the full name does not fit into the table cell.",
+              "type": "string",
+              "minLength": 1
+            },
+            "effect": {
+              "description": "The effect description. Markdown is available. If the effect is different for different quality levels, use \"effectQualityLevels\". If there is general effect text after the list of quality levels, use \"effectAfterQualityLevels\" for that.",
+              "type": "string",
+              "minLength": 1
+            },
+            "effectQualityLevels": { "$ref": "_ActivatableSkill.schema.json#/definitions/QualityLevels" },
+            "effectAfterQualityLevels": {
+              "description": "The effect description after the quality levels list. Markdown is available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "castingTime": {
+              "description": "The liturgical/ceremony time. Markdown is available.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "cost": {
+              "description": "The KP cost.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "range": {
+              "description": "The range.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "duration": {
+              "description": "The duration.",
+              "$ref": "_ActivatableSkill.schema.json#/definitions/MainParameter"
+            },
+            "target": {
+              "description": "The target category.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "effect", "castingTime", "cost", "range", "duration", "target"],
+          "additionalProperties": false,
+          "dependencies": {
+            "effectAfterQualityLevels": ["effectQualityLevels"]
+          }
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "check", "ic", "traditions", "castingTimeNoMod", "costNoMod", "rangeNoMod", "durationNoMod", "src", "translations"],
+  "additionalProperties": false
+}

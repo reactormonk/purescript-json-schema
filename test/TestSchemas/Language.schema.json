@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Language.schema.json",
+  "title": "Language",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "continent": {
+      "description": "The continents this language is present on.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "isExtinct": {
+            "description": "Is the language considered virtually extinct in this continent?",
+            "type": "boolean"
+          }
+        },
+        "required": ["id", "isExtinct"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "maxLevel": {
+      "description": "The max level. Only specific, if lower than default of 3.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2
+    },
+    "specializations": {
+      "description": "A list of language-specific specializations.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "An unique, increasing integer.",
+            "type": "integer",
+            "minimum": 1
+          },
+          "translations": {
+            "type": "object",
+            "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+            "patternProperties": {
+              "^[a-z]{2}-[A-Z]{2}$": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "The name.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "description": {
+                    "description": "The specialization description. It will be appended to the name in parenthesis.",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": ["name"],
+                "additionalProperties": false
+              }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+          }
+        },
+        "required": ["id", "translations"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "prerequisites": { "$ref": "_PrerequisiteGroups.schema.json#/definitions/LanguageCollection" },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name.",
+              "type": "string",
+              "minLength": 1
+            },
+            "alternativeNames": {
+              "description": "A list of alternative names.",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "specializations": {
+              "description": "If specialization cannot be specified by a list, e.g. specializations for different tribes, insert the description here.",
+              "type": "string",
+              "minLength": 1
+            },
+            "specializationInput": {
+              "description": "If specialization cannot be specified by a list, e.g. specializations for different tribes, insert the description for the input field here if it differs from \"specializations\".",
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "description": "The language description.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name"],
+          "additionalProperties": false,
+          "dependencies": {
+            "specializationInput": ["specializations"]
+          }
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "continent", "src", "translations"],
+  "additionalProperties": false
+}

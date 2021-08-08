@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/_Id.schema.json",
+  "title": "Id",
+  "description": "Identifier categories and tags",
+  "definitions": {
+    "Activatable": {
+      "enum": [
+        "Advantage",
+        "Disadvantage",
+        "GeneralSpecialAbility",
+        "FatePointSpecialAbility",
+        "CombatSpecialAbility",
+        "MagicalSpecialAbility",
+        "StaffEnchantment",
+        "FamiliarSpecialAbility",
+        "KarmaSpecialAbility",
+        "ProtectiveWardingCircleSpecialAbility",
+        "CombatStyleSpecialAbility",
+        "AdvancedCombatSpecialAbility",
+        "CommandSpecialAbility",
+        "MagicStyleSpecialAbility",
+        "AdvancedMagicalSpecialAbility",
+        "SpellSwordEnchantment",
+        "DaggerRitual",
+        "InstrumentEnchantment",
+        "AttireEnchantment",
+        "OrbEnchantment",
+        "WandEnchantment",
+        "BrawlingSpecialAbility",
+        "AncestorGlyph",
+        "CeremonialItemSpecialAbility",
+        "Sermon",
+        "LiturgicalStyleSpecialAbility",
+        "AdvancedKarmaSpecialAbility",
+        "Vision",
+        "MagicalTradition",
+        "BlessedTradition",
+        "PactGift",
+        "SikaryanDrainSpecialAbility",
+        "LycantropicGift",
+        "SkillStyleSpecialAbility",
+        "AdvancedSkillSpecialAbility",
+        "ArcaneOrbEnchantment",
+        "CauldronEnchantment",
+        "FoolsHatEnchantment",
+        "ToyEnchantment",
+        "BowlEnchantment",
+        "FatePointSexSpecialAbility",
+        "SexSpecialAbility",
+        "WeaponEnchantment",
+        "SickleRitual",
+        "RingEnchantment",
+        "ChronicleEnchantment"
+      ]
+    },
+    "Rated": {
+      "enum": [
+        "Attribute",
+        "Skill",
+        "MeleeCombatTechnique",
+        "RangedCombatTechnique",
+        "Spell",
+        "Ritual",
+        "LiturgicalChant",
+        "Ceremony"
+      ]
+    }
+  }
+}

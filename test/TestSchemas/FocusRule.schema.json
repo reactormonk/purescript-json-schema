@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/FocusRule.schema.json",
+  "title": "Focus Rule",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "subject": {
+      "description": "The subject ID.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "level": {
+      "description": "The level of the focus rule.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name.",
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "description": "The description of the focus rule.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "description"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "subject", "level", "src", "translations"],
+  "additionalProperties": false
+}

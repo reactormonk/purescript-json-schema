@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Publication.schema.json",
+  "title": "Publication",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "isAdultContent": {
+      "description": "Does the book contain explicit/adult content?",
+      "type": "boolean"
+    },
+    "type": {
+      "description": "The publication type.",
+      "enum": ["CoreRules", "ExpansionRules", "Sourcebook", "RegionalSourcebook", "Adventure"]
+    },
+    "isMissingImplementation": {
+      "description": "The book is not (fully) implemented and thus needs to be excluded from the stable releases.",
+      "type": "boolean"
+    },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "description": "The book's publisher ID.",
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "description": "The name of the book.",
+              "type": "string",
+              "minLength": 1
+            },
+            "nameAbbr": {
+              "description": "The abbreviation of the book's name.",
+              "type": "string",
+              "minLength": 1
+            },
+            "printings": {
+              "$comment": "Experimental API",
+              "description": "The number of printings of this publication.",
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "releaseDate": {
+              "description": "The book's release date.",
+              "type": "string",
+              "format": "date"
+            },
+            "isMissingImplementation": {
+              "description": "The book is not (fully) implemented and thus needs to be excluded from the stable releases.",
+              "type": "boolean"
+            }
+          },
+          "required": ["name", "nameAbbr", "printings"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "isAdultContent", "type", "translations"],
+  "additionalProperties": false
+}

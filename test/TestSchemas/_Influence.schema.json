@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/_Influence.schema.json",
+  "title": "Influence",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The influence's ID.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "prerequisites": { "$ref": "_PrerequisiteGroups.schema.json#/definitions/InfluenceCollection" },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name.",
+              "type": "string"
+            },
+            "effects": {
+              "description": "The effects of the influence. They should be sorted like they are in the book.",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "description": "An label that is displayed and placed before the actual text.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "text": {
+                    "description": "The effect text.",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": ["label", "text"],
+                "additionalProperties": false
+              }
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "effects"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "prerequisites", "src", "translations"],
+  "additionalProperties": false
+}

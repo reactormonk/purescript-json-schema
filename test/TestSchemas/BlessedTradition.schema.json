@@ -1,0 +1,187 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/BlessedTradition.schema.json",
+  "title": "Blessed Tradition",
+  "type": "object",
+  "properties": {
+    "id": { "$ref": "_Activatable.schema.json#/definitions/Id" },
+    "levels": { "$ref": "_Activatable.schema.json#/definitions/Levels" },
+    "max": { "$ref": "_Activatable.schema.json#/definitions/Maximum" },
+    "selectOptions": { "$ref": "_Activatable.schema.json#/definitions/SelectOptions" },
+    "skillApplications": { "$ref": "_Activatable.schema.json#/definitions/SkillApplications" },
+    "skillUses": { "$ref": "_Activatable.schema.json#/definitions/SkillUses" },
+    "primary": {
+      "description": "The tradition's primary attribute. Leave empty if the tradition does not have one.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "aspects": {
+      "description": "The tradition's aspects.",
+      "type": "array",
+      "items": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "integer",
+          "minimum": 1
+        }
+      ],
+      "uniqueItems": true,
+      "minItems": 2,
+      "additionalItems": false
+    },
+    "restrictedBlessings": {
+      "description": "If a tradition restricts the possible blessings, use this to define which blessings are not allowed.",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "minItems": 3,
+      "uniqueItems": true
+    },
+    "favoredCombatTechniques": {
+      "description": "A list of favored combat techniques.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": ["All", "AllMelee", "AllUsedInHunting"]
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "List"
+            },
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "MeleeCombatTechnique",
+                      "RangedCombatTechnique"
+                    ]
+                  },
+                  "value": { "type": "integer", "minimum": 1 }
+                },
+                "required": ["type", "value"],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "favoredSkills": {
+      "description": "A list of favored skills.",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "favoredSkillsSelection": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 2,
+          "uniqueItems": true
+        }
+      },
+      "required": ["amount", "options"],
+      "additionalProperties": false
+    },
+    "isShamanistic": {
+      "description": "Is this a schamanistic tradition?",
+      "type": "boolean"
+    },
+    "associatedPrinciplesId": {
+      "description": "The select option identifier of the disadvantage Principles that represent this tradition's code.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "prerequisites": { "$ref": "_PrerequisiteGroups.schema.json#/definitions/GeneralCollection" },
+    "apValue": { "$ref": "_Activatable.schema.json#/definitions/ApValue" },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name.",
+              "type": "string"
+            },
+            "nameShort": {
+              "description": "A shorter name of the tradition's name, used in liturgical chant descriptions.",
+              "type": "string"
+            },
+            "nameInLibrary": { "$ref": "_Activatable.schema.json#/definitions/NameInLibrary" },
+            "input": { "$ref": "_Activatable.schema.json#/definitions/Input" },
+            "specialRules": {
+              "description": "The special rules of the tradition. They should be sorted like they are in the book.",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "description": "An optional label that is displayed and placed before the actual text.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "text": {
+                    "description": "The text of a special rule.",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": ["text"],
+                "additionalProperties": false
+              }
+            },
+            "prerequisites": { "$ref": "_Activatable.schema.json#/definitions/PrerequisitesReplacement" },
+            "prerequisitesStart": { "$ref": "_Activatable.schema.json#/definitions/PrerequisitesStart" },
+            "prerequisitesEnd": { "$ref": "_Activatable.schema.json#/definitions/PrerequisitesEnd" },
+            "apValue": { "$ref": "_Activatable.schema.json#/definitions/ApValueReplacement" },
+            "apValueAppend": { "$ref": "_Activatable.schema.json#/definitions/ApValueAppend" },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "specialRules"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "primary", "favoredSkills", "isShamanistic", "src", "translations"],
+  "additionalProperties": false
+}

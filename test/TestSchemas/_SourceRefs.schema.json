@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/_SourceRefs.schema.json",
+  "title": "Source References",
+  "description": "The sources where you can find the entry.",
+  "type": "array",
+  "minItems": 1,
+  "items": { "$ref": "#/definitions/SourceRef" },
+  "definitions": {
+    "SourceRef": {
+      "title": "Source Reference",
+      "type": "object",
+      "description": "A source reference. It contains the book's publisher ID and the page where it occurs. If an entry spans multiple pages, provide the last page as well.",
+      "properties": {
+        "id": {
+          "description": "The book's ID.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "since": {
+          "$comment": "Experimental API",
+          "description": "The book's printing since which the entry is present.",
+          "type": "integer",
+          "minimum": 2
+        },
+        "deprecated": {
+          "$comment": "Experimental API",
+          "description": "The book's printing since which the entry has been removed.",
+          "type": "integer",
+          "minimum": 2
+        },
+        "occurrences": {
+          "type": "object",
+          "description": "All occurrences of the entry, identified by IETF language tag (BCP47).",
+          "patternProperties": {
+            "^[a-z]{2}-[A-Z]{2}$": {
+              "description": "The page where it occurs. If the entry spans multiple pages, use this as the first page and \"lastPage\" as the last page.",
+              "oneOf": [
+                { "$ref": "#/definitions/Occurrence" },
+                { "$ref": "#/definitions/VersionedOccurrence" },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "$ref": "#/definitions/Occurrence" }
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "$ref": "#/definitions/VersionedOccurrence" }
+                }
+              ]
+            }
+          },
+          "minProperties": 1,
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "occurrences"],
+      "additionalProperties": false
+    },
+    "Occurrence": {
+      "title": "Source Occurrence",
+      "type": "object",
+      "properties": {
+        "firstPage": {
+          "description": "The page where it occurs. If the entry spans multiple pages, use this as the first page and \"lastPage\" as the last page.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "lastPage": {
+          "description": "The last page where it occurs.\nIf there is only one page, set this to the same as \"firstPage\" oder remove it.",
+          "type": "integer",
+          "minimum": 2
+        }
+      },
+      "required": ["firstPage"],
+      "additionalProperties": false
+    },
+    "VersionedOccurrence": {
+      "title": "Versioned Source Occurrence",
+      "type": "object",
+      "properties": {
+        "since": {
+          "$comment": "Experimental API",
+          "description": "The book's printing since which the entry is present.",
+          "type": "integer",
+          "minimum": 2
+        },
+        "deprecated": {
+          "$comment": "Experimental API",
+          "description": "The book's printing since which the entry has been removed.",
+          "type": "integer",
+          "minimum": 2
+        },
+        "pages": {
+          "oneOf": [
+            { "$ref": "#/definitions/Occurrence" },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/definitions/Occurrence" }
+            }
+          ]
+        }
+      },
+      "required": ["pages"],
+      "additionalProperties": false,
+      "minProperties": 2
+    }
+  }
+}

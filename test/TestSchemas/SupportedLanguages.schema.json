@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/SupportedLanguages.schema.json",
+  "title": "Tribes L10n",
+  "type": "array",
+  "items": { "$ref": "#/definitions/SupportedLanguage" },
+  "definitions": {
+    "SupportedLanguage": {
+      "title": "Supported Language",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "IETF language tag (BCP47).",
+          "type": "string",
+          "pattern": "^[a-z]{2}-[A-Z]{2}$"
+        },
+        "name": {
+          "description": "Name of the language in it's language.",
+          "examples": [
+            "Deutsch",
+            "English",
+            "Nederlands"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "region": {
+          "description": "Region in which the language is spoken.",
+          "examples": [
+            "Deutschland",
+            "United States",
+            "België"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "isMissingImplementation": {
+          "description": "The language is not (fully) implemented and thus needs to be excluded from the stable releases.",
+          "type": "boolean"
+        }
+      },
+      "required": ["id", "name"]
+    }
+  }
+}

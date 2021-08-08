@@ -1,0 +1,226 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Patron.schema.json",
+  "title": "Patron",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The patron's ID.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "category": {
+      "description": "The category of the patron.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "skills": {
+      "description": "The patron-specific skills.",
+      "type": "array",
+      "items": [
+        { "type": "integer", "minimum": 1, "maximum": 59 },
+        { "type": "integer", "minimum": 1, "maximum": 59 },
+        { "type": "integer", "minimum": 1, "maximum": 59 }
+      ],
+      "uniqueItems": true,
+      "minItems": 3,
+      "additionalItems": false
+    },
+    "culture": {
+      "description": "The patron is only available to a certain set of cultures. It may be available to all, it may be available to only specific ones and it may be available to all except specific ones to the listed cultures.",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "All" }
+          },
+          "required": ["tag"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "Only" },
+            "list": {
+              "type": "array",
+              "items": { "type": "integer", "minimum": 1 },
+              "uniqueItems": true,
+              "minItems": 1
+            }
+          },
+          "required": ["tag", "list"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tag": { "const": "Except" },
+            "list": {
+              "type": "array",
+              "items": { "type": "integer", "minimum": 1 },
+              "uniqueItems": true,
+              "minItems": 1
+            }
+          },
+          "required": ["tag", "list"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "powers": {
+      "description": "The patron-specific powers. Used by animist power Animal Powers I–III.",
+      "type": "array",
+      "items": [
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "tag": { "const": "Advantage" },
+                  "id": {
+                    "description": "The advantage identifier.",
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "level": {
+                    "description": "It grants a higher level of the advantage.",
+                    "type": "integer",
+                    "minimum": 2
+                  },
+                  "option": {
+                    "description": "It grants a specific option of the advantage.",
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": ["tag", "id"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "tag": { "const": "Skill" },
+                  "id": {
+                    "description": "The skill identifier.",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 59
+                  },
+                  "value": {
+                    "description": "The value that gets added to the skill.",
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": ["tag", "id", "value"],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tag": { "const": "Combat" },
+              "id": {
+                "enum": ["Attack", "Parry", "RangedCombat", "Dodge", "DamagePoints", "Protection"]
+              },
+              "value": {
+                "description": "The value that gets added to the skill.",
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": ["tag", "id", "value"],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tag": { "const": "Attribute" },
+              "id": {
+                "description": "The attribute identifier.",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 8
+              },
+              "value": {
+                "description": "The value that gets added to the attribute.",
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": ["tag", "id", "value"],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      ],
+      "minItems": 3,
+      "additionalItems": false
+    },
+    "cost": {
+      "description": "The patron-specific AE cost. Used by several animist forces.",
+      "type": "integer",
+      "minimum": 2,
+      "multipleOf": 2
+    },
+    "ic": {
+      "description": "The patron-specific improvement cost. Used by several animist forces.",
+      "enum": ["A", "B", "C", "D"]
+    },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the patron.",
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["name"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "category", "skills", "culture", "translations"],
+  "additionalProperties": false,
+  "if": {
+    "anyOf": [
+      {
+        "properties": {
+          "category": {
+            "const": 1
+          }
+        }
+      },
+      { "required": ["powers"] },
+      { "required": ["cost"] },
+      { "required": ["ic"] }
+    ]
+  },
+  "then": {
+    "properties": {
+      "category": {
+        "const": 1
+      }
+    },
+    "required": ["powers", "cost", "ic"]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/_Errata.schema.json",
+  "title": "Errata",
+  "description": "A list of errata for the entry in the specific language.",
+  "type": "array",
+  "items": { "$ref": "#/definitions/Erratum" },
+  "minItems": 1,
+  "definitions": {
+    "Erratum": {
+      "title": "Erratum",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "The date when the change was confirmed and applied to the entry.",
+          "format": "date"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of what changed.",
+          "minLength": 1
+        }
+      },
+      "required": ["date", "description"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/ToyEnchantment.schema.json",
+  "title": "Toy Enchantment",
+  "type": "object",
+  "properties": {
+    "id": { "$ref": "_Activatable.schema.json#/definitions/Id" },
+    "levels": { "$ref": "_Activatable.schema.json#/definitions/Levels" },
+    "max": { "$ref": "_Activatable.schema.json#/definitions/Maximum" },
+    "selectOptions": { "$ref": "_Activatable.schema.json#/definitions/SelectOptions" },
+    "property": { "$ref": "_Activatable.schema.json#/definitions/Property" },
+    "apValue": { "$ref": "_Activatable.schema.json#/definitions/ApValue" },
+    "prerequisites": { "$ref": "_PrerequisiteGroups.schema.json#/definitions/GeneralCollection" },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": { "$ref": "_Activatable.schema.json#/definitions/Name" },
+            "nameInLibrary": { "$ref": "_Activatable.schema.json#/definitions/NameInLibrary" },
+            "input": { "$ref": "_Activatable.schema.json#/definitions/Input" },
+            "effect": { "$ref": "_Activatable.schema.json#/definitions/Effect" },
+            "aeCost": { "$ref": "_Activatable.schema.json#/definitions/AeCost" },
+            "volume": { "$ref": "_Activatable.schema.json#/definitions/Volume" },
+            "bindingCost": { "$ref": "_Activatable.schema.json#/definitions/BindingCost" },
+            "prerequisites": { "$ref": "_Activatable.schema.json#/definitions/PrerequisitesReplacement" },
+            "prerequisitesStart": { "$ref": "_Activatable.schema.json#/definitions/PrerequisitesStart" },
+            "prerequisitesEnd": { "$ref": "_Activatable.schema.json#/definitions/PrerequisitesEnd" },
+            "apValue": { "$ref": "_Activatable.schema.json#/definitions/ApValueReplacement" },
+            "apValueAppend": { "$ref": "_Activatable.schema.json#/definitions/ApValueAppend" },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "effect", "volume"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "property", "src", "translations"],
+  "additionalProperties": false
+}

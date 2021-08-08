@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/RangedCombatTechnique.schema.json",
+  "title": "Ranged Combat Technique",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "primary_attribute": {
+      "description": "The primary attribute(s).",
+      "type": "array",
+      "items": { "type": "integer", "minimum": 1 },
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true
+    },
+    "improvement_cost": {
+      "description": "Improvement cost.",
+      "enum": ["B", "C", "D"]
+    },
+    "breaking_point_rating": {
+      "description": "The »Breaking Point Rating« of the respective combat technique.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the combat technique.",
+              "type": "string"
+            },
+            "special": {
+              "description": "Special rules for the respective combat technique – if there are any. Markdown available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "improvement_cost", "primary_attribute", "breaking_point_rating", "src", "translations"],
+  "additionalProperties": false
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Guideline.schema.json",
+  "title": "Guideline",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "spellworkChangesAllowed": {
+      "description": "Maximum number of spells that can be exchanged.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The guideline name.",
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["name"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "spellworkChangesAllowed", "translations"],
+  "additionalProperties": false
+}

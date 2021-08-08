@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "Schema/Cantrip.schema.json",
+  "title": "Cantrip",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "An unique, increasing integer.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "traditions": {
+      "description": "The tradition(s) the cantrip is available for. The integers represent the tradition ids. Use the General constant to express the general availability to all traditions.",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "uniqueItems": true
+    },
+    "property": {
+      "description": "The property ID.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "prerequisites": { "$ref": "_PrerequisiteGroups.schema.json#/definitions/CantripCollection" },
+    "src": { "$ref": "_SourceRefs.schema.json" },
+    "translations": {
+      "type": "object",
+      "description": "All translations for the entry, identified by IETF language tag (BCP47).",
+      "patternProperties": {
+        "^[a-z]{2}-[A-Z]{2}$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the cantrip.",
+              "type": "string",
+              "minLength": 1
+            },
+            "effect": {
+              "description": "The effect description. Markdown is available.",
+              "type": "string",
+              "minLength": 1
+            },
+            "range": {
+              "description": "The range.",
+              "type": "string",
+              "minLength": 1
+            },
+            "duration": {
+              "description": "The duration.",
+              "type": "string",
+              "minLength": 1
+            },
+            "target": {
+              "description": "The target category.",
+              "type": "string",
+              "minLength": 1
+            },
+            "note": {
+              "description": "A note, usually on the cantrips usage.",
+              "type": "string",
+              "minLength": 1
+            },
+            "errata": { "$ref": "_Errata.schema.json" }
+          },
+          "required": ["name", "effect", "range", "duration", "target"],
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "traditions", "property", "src", "translations"],
+  "additionalProperties": false
+}

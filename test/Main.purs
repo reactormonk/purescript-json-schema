@@ -2,13 +2,21 @@ module Test.Main where
 
 import Prelude
 
+import Control.Monad.Except (runExceptT)
+import Data.Either (isRight)
 import Data.JSON.Schema (class JsonSchema, Definition(..), Reference, Schema(..), StringFormat(..), definition, recordJsonSchema, schemaPath)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (unwrap, wrap)
+import Data.Traversable (for_)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
+import Effect.Class (liftEffect)
+import Node.Encoding (Encoding(..))
+import Node.FS.Aff (readTextFile)
+import Node.FS.Sync (readdir)
+import Simple.JSON (readImpl, readJSON')
 import Test.Spec (describe, it)
-import Test.Spec.Assertions (shouldEqual)
+import Test.Spec.Assertions (shouldEqual, shouldSatisfy)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
 
@@ -29,31 +37,41 @@ import Test.Spec.Runner (runSpec)
 -- |         '$ref': '#/definitions/Parent'
 -- | ```
 main :: Effect Unit
-main = launchAff_ $ runSpec [consoleReporter] do
-  describe "purescript-json-schema" do
-    it "generate for newtyped String" do
-      definition `shouldEqual` userNameDef
+main = launchAff_ $ do
+  files <- liftEffect $ readdir "test/TestSchemas"
+  runSpec [consoleReporter] do
+    describe "purescript-json-schema" do
+      it "generate for newtyped String" do
+        definition `shouldEqual` userNameDef
 
-    it "generate for { username :: UserName }" do
-      recordJsonSchema `shouldEqual` userWithUserName
+      it "generate for { username :: UserName }" do
+        recordJsonSchema `shouldEqual` userWithUserName
 
-    it "generate for { string :: String }" do
-      recordJsonSchema `shouldEqual` recordWithString
+      it "generate for { string :: String }" do
+        recordJsonSchema `shouldEqual` recordWithString
 
-    it "generate for { username :: Maybe UserName, address :: String }" do
-      recordJsonSchema `shouldEqual` withMaybeUserNameDef
+      it "generate for { username :: Maybe UserName, address :: String }" do
+        recordJsonSchema `shouldEqual` withMaybeUserNameDef
 
-    it "generate for { arr :: Array String }" do
-      recordJsonSchema `shouldEqual` recordWithArr
+      it "generate for { arr :: Array String }" do
+        recordJsonSchema `shouldEqual` recordWithArr
 
-    it "generate for { parents :: Array Parent }" do
-      recordJsonSchema `shouldEqual` parents
+      it "generate for { parents :: Array Parent }" do
+        recordJsonSchema `shouldEqual` parents
 
-    it "generate for { ages :: Maybe (Array String) }" do
-      recordJsonSchema `shouldEqual` recordWithMaybeArr
+      it "generate for { ages :: Maybe (Array String) }" do
+        recordJsonSchema `shouldEqual` recordWithMaybeArr
 
-    it "generate for { name :: UserName, age :: Maybe Int, parents :: Array Parent }" do
-      recordJsonSchema `shouldEqual` userDefinition
+      it "generate for { name :: UserName, age :: Maybe Int, parents :: Array Parent }" do
+        recordJsonSchema `shouldEqual` userDefinition
+
+      files `for_` \file -> do
+        it ("can read schema from " <> file) do
+          text <- readTextFile UTF8 $ "test/TestSchemas/" <> file
+          let schema = unwrap $ runExceptT $ do
+                json <- readJSON' text
+                readImpl json :: _ Schema
+          schema `shouldSatisfy` isRight
 
     where
       userDefinition :: Definition { name :: UserName, age :: Maybe Int, parents :: Array Parent }
@@ -61,13 +79,13 @@ main = launchAff_ $ runSpec [consoleReporter] do
         Definition $ Object 
           [ { required: false, name: "age", schema: Int }
           , { required: true, name: "name", schema: Reference "#/definitions/UserName" }
-          , { required: true, name: "parents", schema: Array $ Reference "#/definitions/Parent" }
+          , { required: true, name: "parents", schema: Array $ pure $ Reference "#/definitions/Parent" }
           ]
 
       parents :: Definition { parents :: Array Parent }
       parents =
         Definition $ Object
-          [ { required: true, name: "parents", schema: Array $ Reference "#/definitions/Parent" } ]
+          [ { required: true, name: "parents", schema: Array $ pure $ Reference "#/definitions/Parent" } ]
 
       recordWithString :: Definition { string :: String }
       recordWithString =
@@ -79,10 +97,10 @@ main = launchAff_ $ runSpec [consoleReporter] do
         [ { required: true, name: "username", schema: Reference "#/definitions/UserName" } ]
 
       recordWithArr :: Definition { arr :: Array String }
-      recordWithArr = Definition $ Object $ [ { required: true, name: "arr", schema: Array (String None) } ]
+      recordWithArr = Definition $ Object $ [ { required: true, name: "arr", schema: Array $ pure (String None) } ]
 
       recordWithMaybeArr :: Definition { arr :: Maybe (Array String) }
-      recordWithMaybeArr = Definition $ Object $ [ { required: false, name: "arr", schema: Array (String None) } ]
+      recordWithMaybeArr = Definition $ Object $ [ { required: false, name: "arr", schema: Array $ pure (String None) } ]
 
       userNameDef :: Definition UserName
       userNameDef = Definition (String None)
