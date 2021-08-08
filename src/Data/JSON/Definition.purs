@@ -25,19 +25,18 @@ module Data.JSON.Definition
 import Prelude
 
 import Data.Foldable (any)
+import Data.JSON.Schema (Schema(..), Property(..), Object(..), StringFormat(..))
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype, unwrap)
-import Data.Tuple (Tuple(..))
 import Data.Symbol (class IsSymbol, SProxy(..), reflectSymbol)
+import Data.Tuple (Tuple(..))
 import Foreign (Foreign)
 import Foreign.Object as FO
-import Prim.RowList (class RowToList, Cons, Nil, RowList)
 import Prim.Row as Row
+import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
 import Simple.JSON (write, writeJSON)
 import Type.Prelude (RLProxy(..))
 import Type.Proxy (Proxy(..))
-
-import Data.JSON.Schema (Schema(..), Property(..), Object(..), StringFormat(..))
 
 newtype Definition a = Definition Schema
 
@@ -158,7 +157,7 @@ instance recordUnamedSchema ::
     where
       fieldListP = RLProxy :: RLProxy fieldList
 
-class RowToProperty (xs :: RowList Type) where
+class RowToProperty (xs :: RowList) where
   toPropertyArray :: RLProxy xs -> Array Property
 
 instance writeDefinitionFieldsMaybeCons ::

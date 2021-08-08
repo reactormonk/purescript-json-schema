@@ -2,15 +2,16 @@ module Test.Main where
 
 import Prelude
 
+import Data.JSON.Definition (class JsonSchema, Definition(..), Reference, recordJsonSchema, definition, schemaPath)
+import Data.JSON.Schema (Object(..), Property(..), Schema(..), StringFormat(..))
+import Data.Maybe (Maybe(..))
+import Data.Newtype (unwrap, wrap)
 import Effect (Effect)
+import Effect.Aff (launchAff_)
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
-import Test.Spec.Runner (run)
-import Data.Maybe (Maybe(..))
-import Data.Newtype (unwrap, wrap)
-import Data.JSON.Schema (Object(..), Property(..), Schema(..), StringFormat(..))
-import Data.JSON.Definition (class JsonSchema, Definition(..), Reference, recordJsonSchema, definition, schemaPath)
+import Test.Spec.Runner (runSpec)
 
 -- | This test aims to implement support for the following definition:
 -- |
@@ -29,7 +30,7 @@ import Data.JSON.Definition (class JsonSchema, Definition(..), Reference, record
 -- |         '$ref': '#/definitions/Parent'
 -- | ```
 main :: Effect Unit
-main = run [consoleReporter] do
+main = launchAff_ $ runSpec [consoleReporter] do
   describe "purescript-json-schema" do
     it "generate for newtyped String" do
       definition `shouldEqual` userNameDef
