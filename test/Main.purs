@@ -2,8 +2,7 @@ module Test.Main where
 
 import Prelude
 
-import Data.JSON.Definition (class JsonSchema, Definition(..), Reference, recordJsonSchema, definition, schemaPath)
-import Data.JSON.Schema (Object(..), Property(..), Schema(..), StringFormat(..))
+import Data.JSON.Schema (class JsonSchema, Definition(..), Reference, Schema(..), StringFormat(..), definition, recordJsonSchema, schemaPath)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (unwrap, wrap)
 import Effect (Effect)
@@ -59,31 +58,31 @@ main = launchAff_ $ runSpec [consoleReporter] do
     where
       userDefinition :: Definition { name :: UserName, age :: Maybe Int, parents :: Array Parent }
       userDefinition =
-        Definition $ Object $ Properties
-          [ Property true "name" $ Reference "#/definitions/UserName"
-          , Property false "age" Int
-          , Property true "parents" $ Array $ Reference "#/definitions/Parent"
+        Definition $ Object 
+          [ { required: false, name: "age", schema: Int }
+          , { required: true, name: "name", schema: Reference "#/definitions/UserName" }
+          , { required: true, name: "parents", schema: Array $ Reference "#/definitions/Parent" }
           ]
 
       parents :: Definition { parents :: Array Parent }
       parents =
-        Definition $ Object $ Properties
-          [ Property true "parents" $ Array $ Reference "#/definitions/Parent" ]
+        Definition $ Object
+          [ { required: true, name: "parents", schema: Array $ Reference "#/definitions/Parent" } ]
 
       recordWithString :: Definition { string :: String }
       recordWithString =
-        Definition $ Object $ Properties [ Property true "string" $ String None ]
+        Definition $ Object $ [ { required: true, name: "string", schema: String None } ]
 
       userWithUserName :: Definition { username :: UserName }
       userWithUserName =
         Definition $ Object $
-        Properties [ Property true "username" $ Reference "#/definitions/UserName" ]
+        [ { required: true, name: "username", schema: Reference "#/definitions/UserName" } ]
 
       recordWithArr :: Definition { arr :: Array String }
-      recordWithArr = Definition $ Object $ Properties [ Property true "arr" $ Array (String None) ]
+      recordWithArr = Definition $ Object $ [ { required: true, name: "arr", schema: Array (String None) } ]
 
       recordWithMaybeArr :: Definition { arr :: Maybe (Array String) }
-      recordWithMaybeArr = Definition $ Object $ Properties [ Property false "arr" $ Array (String None) ]
+      recordWithMaybeArr = Definition $ Object $ [ { required: false, name: "arr", schema: Array (String None) } ]
 
       userNameDef :: Definition UserName
       userNameDef = Definition (String None)
@@ -91,9 +90,9 @@ main = launchAff_ $ runSpec [consoleReporter] do
       withMaybeUserNameDef :: Definition { username :: Maybe UserName, address :: String }
       withMaybeUserNameDef =
         Definition $ Object $
-        Properties [ Property true "address" $ String None
-                   , Property false "username" $ Reference "#/definitions/UserName"
-                   ]
+        [ { required: true, name: "address", schema: String None }
+        , { required: false, name: "username", schema: Reference "#/definitions/UserName" }
+        ]
 
 newtype UserName = UserName String
 
