@@ -99,6 +99,60 @@ in  upstream
 -------------------------------
 -}
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.13.8-20210226/packages.dhall sha256:7e973070e323137f27e12af93bc2c2f600d53ce4ae73bb51f34eb7d7ce0a43ea
+      https://github.com/purescript/package-sets/releases/download/psc-0.14.3-20210808/packages.dhall sha256:dbc06803c031113d3f9e001f8d95629e48da720d2bfe45d8bbe2c0cffcef293d
 
 in  upstream
+  with dodo-printer =
+    { dependencies =
+      [ "aff"
+      , "ansi"
+      , "avar"
+      , "console"
+      , "effect"
+      , "foldable-traversable"
+      , "lists"
+      , "maybe"
+      , "minibench"
+      , "node-child-process"
+      , "node-fs-aff"
+      , "node-process"
+      , "psci-support"
+      , "strings"
+      ]
+    , repo = "https://github.com/natefaubion/purescript-dodo-printer.git"
+    , version = "v2.0.0"
+    }
+  with ps-cst =
+    { dependencies =
+      [ "console"
+      , "effect"
+      , "psci-support"
+      , "record"
+      , "strings"
+      , "spec"
+      , "node-path"
+      , "node-fs-aff"
+      , "ansi"
+      , "dodo-printer"
+      ]
+    , repo = "https://github.com/purescript-codegen/purescript-ps-cst.git"
+    , version = "1339dd3"
+    }
+  with cst-simple =
+    { dependencies =
+      [ "arrays"
+      , "console"
+      , "debug"
+      , "effect"
+      , "node-fs-aff"
+      , "ps-cst"
+      , "psci-support"
+      , "spec"
+      , "string-parsers"
+      , "typelevel-prelude"
+      , "unicode"
+      , "prelude"
+      ]
+    , repo = "https://github.com/purescript-codegen/purescript-cst-simple.git"
+    , version = "37d49e8"
+    }

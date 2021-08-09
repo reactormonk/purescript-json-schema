@@ -12,15 +12,28 @@ to generate this file without the comments in this block.
 -}
 { name = "purescript-json-schema"
 , dependencies =
-  [ "console"
+  [ "aff"
+  , "arrays"
+  , "console"
+  , "control"
+  , "cst-simple"
   , "effect"
+  , "either"
+  , "foldable-traversable"
+  , "foreign"
   , "foreign-object"
+  , "maybe"
+  , "newtype"
+  , "node-buffer"
+  , "node-fs"
   , "node-fs-aff"
   , "prelude"
   , "psci-support"
   , "simple-json"
   , "spec"
   , "transformers"
+  , "tuples"
+  , "typelevel-prelude"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

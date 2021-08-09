@@ -32,20 +32,19 @@ import Prelude
 import Control.Alternative ((<|>))
 import Control.Monad.Error.Class (throwError)
 import Data.Array (filter, fromFoldable) as Array
-import Data.Array.NonEmpty (NonEmptyArray, fromFoldable)
+import Data.Array.NonEmpty (NonEmptyArray)
 import Data.Foldable (any, oneOf)
 import Data.Generic.Rep (class Generic)
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Data.Maybe (Maybe(..), fromMaybe)
-import Data.Newtype (class Newtype, unwrap, wrap)
-import Data.Semigroup.Foldable (class Foldable1)
+import Data.Newtype (class Newtype, unwrap)
 import Data.Symbol (class IsSymbol, SProxy(..), reflectSymbol)
 import Data.Tuple (Tuple(..))
 import Foreign (F, Foreign, ForeignError(..))
 import Foreign.Object (Object)
 import Foreign.Object as FO
 import Prim.Row as Row
-import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
+import Prim.RowList (class RowToList, Cons, Nil)
 import Simple.JSON (class ReadForeign, class WriteForeign, readImpl, write, writeImpl, writeJSON)
 import Type.Prelude (RLProxy(..))
 import Type.Proxy (Proxy(..))
@@ -109,6 +108,7 @@ instance showWForeign :: Show WForeign where
 
 foreign import foreignEq :: Foreign -> Foreign -> Boolean
 
+newtype Definition :: forall k. k -> Type
 newtype Definition a = Definition Schema
 
 derive instance newtypeDefinition :: Newtype (Definition a) _
@@ -116,22 +116,27 @@ derive instance newtypeDefinition :: Newtype (Definition a) _
 derive newtype instance showDefinition :: Show (Definition a)
 derive newtype instance eqDefinition :: Eq (Definition a)
 
+newtype Reference :: forall k. k -> Type
 newtype Reference a = Ref String
 
 derive instance newtypeReference :: Newtype (Reference a) _
 
+newtype Description :: forall k. k -> Type
 newtype Description a = Description String
 
 derive instance newtypeDescription :: Newtype (Description a) _
 
+class JsonSchema :: forall k. k -> Constraint
 class JsonSchema a where
   definition :: Definition a
   description :: Maybe (Description a)
   schemaPath :: Reference a
 
+class RecordDefinition :: forall k. k -> Constraint
 class RecordDefinition a where
   recordJsonSchema :: Definition a
 
+class IsType :: forall k. k -> Constraint
 class IsType a where
   typeOf :: Proxy a -> TypeOf
 
@@ -217,11 +222,8 @@ instance writeForeignSchema :: WriteForeign Schema where
     if any (_.required) properties
       then write { "type": "object", required: Array.filter (_.required) properties, properties }
       else write { "type": "object", properties }
-    where
-      required { required: true, name: n, schema: _ } = [n]
-      required _ = []
 
-class RowToProperty (xs :: RowList) where
+class RowToProperty xs where
   toPropertyArray :: RLProxy xs -> Array Property
 
 instance recordUnamedSchema ::
